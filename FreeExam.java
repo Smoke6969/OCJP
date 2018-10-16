@@ -1,6 +1,8 @@
 package myexamcloud;
 
 import java.io.Console;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -17,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.stream.Stream;
+
+import myexamcloud.supportclasses.Class_q14;
 
 public class FreeExam {
 
@@ -202,6 +206,76 @@ public class FreeExam {
 			//5. Close connection
 			con.close();
 		}catch(Exception e){ System.out.println(e);}
+	}
+
+
+	//1. The derived most class should be caught first, so the correct order is here, otherwise compilation error
+	public void question12(){
+
+		try {
+
+			testMethod();
+
+		} catch (ExC exC) {
+
+		} catch (ExB exB){
+
+		} catch (ExA exB){
+
+		}catch (Exception ex){
+
+		}
+
+	}
+
+	public void testMethod() throws ExC {
+		throw new ExC();
+	}
+
+	class ExA extends Exception {}
+	class ExB extends ExA {}
+	class ExC extends ExB {}
+
+	//1. The following declaration of abstract class is legal because non-abstract method can be declared inside
+	//abstract class
+	//2. Abstract class can be instantiated like the following
+	public void question13(){
+
+		Abstraction a = new Abstraction() {
+			@Override
+			public void meth() {
+				super.meth();
+				System.out.println("Inside overrided");
+			}
+		};
+
+		a.meth();
+
+	}
+
+	abstract class Abstraction {
+		public void meth(){
+			System.out.println("Inside abstraction");
+		}
+	}
+
+
+	//1. Static parts executes before any non-static parts. So first variable x will be created with value 0, then it
+	// will become 15, then 10 and non-static constructor will be the last to change it to 5
+	public void question14(){
+
+		Class_q14 class_q14 = new Class_q14();
+		System.out.println(Class_q14.x);
+	}
+
+
+	//1. public int read() throws java.io.IOException - Reads a SINGLE character and returns an integer
+	// representation of it. So as long as first letter in file is A - it will print 65
+	public void question15() throws IOException{
+
+		FileReader fr = new FileReader("D:\\prj\\OCJP\\src\\myexamcloud\\new.txt");
+		System.out.println(fr.read());
+		fr.close();
 	}
 
 }
