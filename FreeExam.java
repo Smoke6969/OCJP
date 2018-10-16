@@ -8,11 +8,13 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.Random;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -205,7 +207,8 @@ public class FreeExam {
 				System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
 			//5. Close connection
 			con.close();
-		}catch(Exception e){ System.out.println(e);}
+		}catch(Exception e){ System.out.println(e);
+		}
 	}
 
 
@@ -276,6 +279,53 @@ public class FreeExam {
 		FileReader fr = new FileReader("D:\\prj\\OCJP\\src\\myexamcloud\\new.txt");
 		System.out.println(fr.read());
 		fr.close();
+	}
+
+
+	//1. This way of using synchronized keyword is correct because we've synchronized instances before setting up the
+	// variables. So only one thread will be setting/reading variables at given moment. So there won't be memory
+	// inconsistency.
+	public void question16(){
+
+	}
+
+	private int i;
+	private int j;
+
+	public double divide(){
+
+		synchronized (this){
+			return i/j;
+		}
+	}
+
+	public void set(int i, int j){
+
+		synchronized (this){
+			this.i = i;
+			this.j = j;
+		}
+	}
+
+	//1. ResultSet.first() - Moves the cursor to the first row in this ResultSet object.
+	//2. ResultSet.next() - Moves the cursor forward one row from its current position
+	//3. ResultSet.getstring(int) - Retrieves the value of the designated column in the current row of this
+	// ResultSet object as a String in the Java programming language.
+	public void question17() throws ClassNotFoundException, SQLException{
+
+		Class.forName("com.mysql.jdbc.Driver");
+
+		Connection conn = null;
+		Statement stmt = null;
+
+		conn = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/sonoo","root","root");
+		stmt = conn.createStatement();
+
+		ResultSet rs = stmt.executeQuery("DESC person");
+		rs.first(); //moves to the first row
+		rs.next();  //moves to the second row
+		System.out.println(rs.getString(1)); //prints value of first column second row
 	}
 
 }
