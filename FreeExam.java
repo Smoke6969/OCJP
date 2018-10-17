@@ -3,6 +3,7 @@ package myexamcloud;
 import java.io.Console;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -12,14 +13,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Random;
-import java.util.TreeSet;
+import java.time.Period;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import myexamcloud.supportclasses.Class_q14;
@@ -326,6 +327,166 @@ public class FreeExam {
 		rs.first(); //moves to the first row
 		rs.next();  //moves to the second row
 		System.out.println(rs.getString(1)); //prints value of first column second row
+	}
+
+
+	//1. K ceilingKey(K key) of TreeMap returns the least key greater or equal to the given key, so in this case
+	// it'll return Three because P goes after O and before T
+	public void question18() {
+
+		Map map = new HashMap<>();
+		map.put("One", 1);
+		map.put("Two", 2);
+		map.put("Three", 3);
+		map.put("Four", 4);
+
+		TreeMap tMap = new TreeMap(map);
+		System.out.println(tMap.ceilingKey("P")); //Three
+	}
+
+
+	//1. Period: int getDays() - Gets the amount of days of this period. So from Period.of(1, 2, 3); - getDays() will
+	// return only the days, so it'll return 3
+	public void question19() {
+
+		Period period = Period.of(1, 2, 3);
+		LocalDate loc = LocalDate.of(2015, 1, 1);
+		int days = period.getDays();
+		loc = loc.plusDays(days);
+		System.out.println(loc); //2015-01-04
+	}
+
+
+	//1. ArrayDeque:
+	//add(E e) Inserts the specified element at the end of this deque.
+	//offerLast(E e) Inserts the specified element at the end of this deque.
+	//offer(E e) Inserts the specified element at the end of this deque.
+	//So in ArrayDeque add, offerLast and offer ARE EQUIVALENT
+	//2. ArrayDeque:
+	//E poll() Retrieves and removes the head of the queue represented by this deque (in other words, the first
+	// element of this deque), or returns null if this deque is empty.
+	public void question20() {
+
+		ArrayDeque ad = new ArrayDeque<>();
+		ad.add(6);
+		ad.add(2);
+		ad.offerLast(3);
+		ad.offer(4);
+		ad.poll();
+		System.out.println(ad);
+	}
+
+
+	//1. We’re only allowed to perform a SINGLE OPERATION that consumes a Stream, otherwise, we’ll get an
+	// IllegalStateException exception that states that the Stream has already been operated upon or closed.
+	// Operation may contain multiple functions, but after ";" sign the stream is closed
+	//2. To use the stream multiple times we can use the Supplier functional interface like we do below
+	//3. Stream:
+	// 3.1 Stream<T> sorted() - Returns a stream consisting of the elements of this stream, sorted
+	// according to natural order.
+	// 3.2 Stream<T> peek(java.util.function.Consumer<? super T> action) - Returns a stream consisting of the
+	// elements of this stream, additionally performing the provided action on each element as
+	// elements are consumed from the resulting stream. This method exists mainly to support debugging, where you
+	// want to see the elements as they flow past a certain point in a pipeline, like .peek(System.out::println) will
+	// print all the elements to the console
+	// 3.3 java.util.Optional<T> findFirst() - Returns an Optional describing the first element of this stream,
+	// or an empty Optional if the stream is empty. If the stream has no encounter order, then any element may be
+	// returned. NOTE: streamSupplier.get().peek(it -> System.out.println(it)).findFirst(); - will print only the
+	// first element of the stream and not all of it
+	public void question21() {
+
+		Stream ints = Stream.of(3, 6, 0, 4);
+		ints.sorted().peek(System.out::println).findFirst(); //prints 0
+		//---------------------------
+
+		Supplier<Stream> streamSupplier = () -> Stream.of(3, 6, 0, 4);
+		List test = new ArrayList<>();
+		List another = new ArrayList<>();
+
+		test = Arrays.asList(streamSupplier.get().toArray()); //3, 6, 0, 4
+		test = Arrays.asList(streamSupplier.get().sorted().toArray()); //0, 3, 4, 6
+		test = Arrays.asList(streamSupplier.get().peek(it -> another.add(it)).toArray()); //3, 6, 0, 4
+		test = Arrays.asList(streamSupplier.get().findFirst()); //Optional[3]
+
+		//------
+		streamSupplier.get().peek(it -> System.out.println(it)).findFirst(); //3
+		Stream.of("one", "two", "three", "four")
+		      .filter(e -> e.length() > 3)
+		      .peek(e -> System.out.println("Filtered value: " + e))
+		      .map(String::toUpperCase)
+		      .peek(e -> System.out.println("Mapped value: " + e))
+		      .collect(Collectors.toList());
+
+	}
+
+
+	//1. Files.readAllLines() method returns List<String> so it can't be directly assigned to Stream. To make the
+	// Stream from the List just call .stream() method on it.
+	//2. Stream:
+	//Stream<T> limit(long maxSize) - Returns a stream consisting of the elements of this stream,
+	// truncated to be no longer than maxSize in length. maxSize can be bigger than size of the stream - no errors.
+	public void question22() throws IOException{
+
+		try{
+			Path path = Paths.get("D:\\prj\\OCJP\\src\\myexamcloud\\input.txt");
+			//Stream<String> stream = Files.readAllLines(path); COMPILATION ERROR
+			Stream<String> stream = Files.readAllLines(path).stream();
+			stream.limit(1).forEach(System.out::println);
+		}catch (IOException ex){
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	//1. You may or may not specify variable type as parameter in lambda expression, so:
+	// it -> System.out.print(it * 2)
+	//is the same as
+	// (Integer it) -> System.out.print(it * 2)
+	public void question23() throws IOException {
+
+		Stream<Integer> ints = Stream.of(1, 2, 3);
+		ints.forEach(it -> System.out.print(it * 2));
+
+		Stream<Integer> ints1 = Stream.of(1, 2, 3);
+		ints.forEach((Integer it) -> System.out.print(it * 2));
+	}
+
+
+	//1. To use methods from Collections class, your classes has to implement Comparable<T> interface. This interface
+	// imposes a total ordering on the objects of each class that implements it. This ordering is referred to as the
+	// class's natural ordering, and the class's compareTo method is referred to as its natural comparison method.
+	//2. With implementing this method you should override int compareTo(T) method. So compareTo method takes an
+	// Object and returns int.
+	public void question24() throws IOException {
+
+		Student st1 = new Student("Alex", 32);
+		Student st2 = new Student("Alex", 31);
+		Student st3 = new Student("Alex", 29);
+		Student st4 = new Student("Alex", 33);
+		List<Student> list = new ArrayList<>();
+		list.add(st1);
+		list.add(st2);
+		list.add(st3);
+		list.add(st4);
+		Collections.sort(list); //will sort the list by age
+	}
+
+	class Student implements Comparable<Student>{
+		String name;
+		int age;
+		public Student(String name, int age){
+			this.name = name;
+			this.age = age;
+		}
+
+		@Override
+		public int compareTo(Student student) {
+			if(age == student.age)
+				return 0;
+			else if(age > student.age)
+				return 1;
+			else
+				return -1;
+		}
 	}
 
 }
