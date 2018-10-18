@@ -31,21 +31,6 @@ import myexamcloud.supportclasses.Class_q14;
 
 public class FreeExam {
 
-	//1. When initializing a String array - values in array are null
-	//2. You can't put null as value into ConcurrentHashMap due to RUNTIME NullPointerException
-	public void question1(){
-
-		String s[] = new String[2];
-		s[1] = "B";
-		ConcurrentHashMap<String, Integer> cMap = new ConcurrentHashMap<>();
-		cMap.put("A", new Integer(1));
-		cMap.put(s[0], new Integer(2));
-		cMap.put("C", 3);
-		cMap.putIfAbsent("D", new Integer(4));
-
-		System.out.println(cMap);
-	}
-
 
 	//1. ForkJoinTask<V> implements Future<V>, Serializable
 	//2. Has a lots of methods like complete, getPool, tryUnfork, isDone
