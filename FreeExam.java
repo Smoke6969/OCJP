@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.MonthDay;
 import java.time.Period;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -116,8 +120,8 @@ public class FreeExam {
 	// or null if there is no such element.
 	public void question6(){
 
-		//Set set = new TreeSet();
-		TreeSet set = new TreeSet();
+		//Set set = new TreeSet<>(); // compilation error
+		TreeSet set = new TreeSet<>();
 		set.add("A");
 		set.add("B");
 		set.add("E");
@@ -153,7 +157,7 @@ public class FreeExam {
 	// discarding the first n elements of the stream.
 	//2. abstract Stream<T> limit(long maxSize) - Returns a stream consisting of the elements of this stream,
 	// truncated to be no longer than maxSize in length.
-	//3. abstract long count() - Returns the count of elements in this stream.
+	//3. abstract long count() - Returns the count of elements in this stream. NOTE that it's a Long, not an int.
 	//4. In this case skip(3) will remove first 3 element and limit 2 will take only first 2 elements
 	public void question9(){
 
@@ -373,7 +377,7 @@ public class FreeExam {
 		ad.offerLast(3);
 		ad.offer(4);
 		ad.poll();
-		System.out.println(ad);
+		System.out.println(ad); //2, 3, 4
 	}
 
 
@@ -486,6 +490,129 @@ public class FreeExam {
 				return 1;
 			else
 				return -1;
+		}
+	}
+
+	//1. MonthDay is an immutable date-time object that represents the combination of a month and day-of-month. Any field
+	// that can be derived from a month and day, such as quarter-of-year, can be obtained.
+	// This class does not store or represent a year, time or time-zone. For example, the value "December 3rd" can be
+	// stored in a MonthDay. Since a MonthDay does not possess a year, the leap day of February 29th is considered
+	// valid.
+	// There are 2 implementations of MonthDay.of:
+	// static MonthDay of(int month, int dayOfMonth)
+	// static MonthDay of(@NotNull java.time.Month month, int dayOfMonth)
+	public void question25()  {
+
+		MonthDay monthDay1 = MonthDay.of(2, 14);
+		MonthDay monthDay2 = MonthDay.of(Month.FEBRUARY, 14);
+	}
+
+
+	//1. public static final class Builder - it's a static nested class inside Locale. It has different methods like
+	// setLanguage, setRegion etc. The class itself is static nested, but the variables and methods inside are
+	// non-static, so to use them you're calling Locale.Builder() constructor. What those methods does - they're
+	// setting fields of private variable of type InternalLocaleBuilder and inside build() method getting an instance
+	// of Locale by calling getInstance method of Locale from passed InternalLocaleBuilder variable.
+	//2. String getDisplayLanguage(Locale inLocale) Returns a name for the locale's language that is appropriate for
+	// display to the user. If possible, the name returned will be localized according to inLocale. For example,
+	// if the locale is fr_FR and inLocale is en_US, getDisplayLanguage() will return "French";
+	// if the locale is en_US and inLocale is fr_FR, getDisplayLanguage() will return "anglais".
+	public void question26()  {
+
+		Locale ENUS = new Locale.Builder().setLanguage("en").setRegion("US").build();
+		System.out.println(ENUS.getDisplayLanguage(new Locale("fr"))); //anglais
+	}
+
+
+	//1. Statement - The object used for executing a static SQL statement and returning the results it produces.
+	//2. PreparedStatement extends Statement - An object that represents a precompiled SQL statement. A SQL statement
+	// is precompiled and stored in a PreparedStatement object. This object can then be used to efficiently execute
+	// this statement multiple times.
+	//3. CallableStatement extends PreparedStatement - The interface used to execute SQL stored procedures. The JDBC
+	// API provides a stored procedure SQL escape syntax that allows stored procedures to be called in a standard way
+	// for all RDBMSs. This escape syntax has one form that includes a result parameter and one that does not.
+	// If used, the result parameter must be registered as an OUT parameter. The other parameters can be used for
+	// input, output or both. Parameters are referred to sequentially, by number, with the first parameter being 1.
+	//3.1 registerOutParameter - Registers the OUT parameter in ordinal position parameterIndex to the JDBC type
+	// sqlType. All OUT parameters must be registered before a stored procedure is executed.
+	//3.2 callableStatement.getString -  Retrieves the value of the designated JDBC CHAR, VARCHAR, or LONGVARCHAR
+	// parameter as a String in the Java programming language.
+	public void question27()  {
+
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/sonoo","root","root");
+
+			Statement stmt = con.createStatement();
+			PreparedStatement preparedStmt = con.prepareStatement("select * from emp");
+			//---------
+			CallableStatement callableStatement;
+			String getDBUSERByUserIdSql = "{call getDBUSERByUserId(?,?,?,?)}";
+			callableStatement = con.prepareCall(getDBUSERByUserIdSql);
+			callableStatement.setInt(1, 10);
+			callableStatement.registerOutParameter(2, java.sql.Types.VARCHAR);
+			callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);
+			callableStatement.registerOutParameter(4, java.sql.Types.DATE);
+
+            // execute getDBUSERByUserId store procedure
+			callableStatement.executeUpdate();
+
+			String userName = callableStatement.getString(2);
+			String createdBy = callableStatement.getString(3);
+			Date createdDate = callableStatement.getDate(4);
+
+		}catch(Exception e){
+			System.out.println(e);
+		}
+	}
+
+
+	//String 6d passed into Double.parseDouble returns 6.0 double
+	public void question28()  {
+
+		double d = 0;
+		try{
+			d = Double.parseDouble("6d");
+			System.out.println(d);
+		}catch (NumberFormatException ex){
+			System.out.println(ex);
+		}
+	}
+
+
+	//1. ResultSet executeQuery(String sql) - Executes the given SQL statement, which returns a single ResultSet
+	// object. Typically used for SELECT statements. Can not be used for Data Manipulation commands (DML)
+	//2. boolean execute(String sql) - Executes any SQL statement. Can be used for DML. ou must then use the methods
+	// getResultSet or getUpdateCount to retrieve the result, and getMoreResults to move to any subsequent result(s).
+	public void question29() throws SQLException, ClassNotFoundException  {
+
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection conn = null;
+		Statement stmt = null;
+		String sql;
+
+		conn = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/sonoo","root","root");
+		stmt = conn.createStatement();
+
+		ResultSet rs = stmt.executeQuery("DESC person");
+		sql = "create database db";
+		System.out.println(stmt.executeQuery(sql)); //an EXCEPTION
+		//-------------------------
+		System.out.println(stmt.execute(sql)); //CORRECT
+		stmt.execute(sql);
+		ResultSet res = stmt.getResultSet();
+	}
+
+	//1. When dividing by zero an ArithmeticException is thrown. In general it's thrown when an exceptional arithmetic
+	// condition has occurred.
+	public void question30()  {
+
+		try{
+			int i = 5 / 0;
+		} catch (ArithmeticException ex){
+			System.out.println(ex.getMessage());
 		}
 	}
 
