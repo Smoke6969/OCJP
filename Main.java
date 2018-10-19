@@ -6,6 +6,6 @@ public class Main {
 
 		Exam1 exam = new Exam1();
 
-		exam.question8();
+		exam.question15();
 	}
 }
