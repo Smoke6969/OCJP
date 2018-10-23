@@ -20,14 +20,11 @@ import java.time.MonthDay;
 import java.time.Period;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import myexamcloud.supportclasses.Class_q14;
 
 public class FreeExam {
 
@@ -257,8 +254,8 @@ public class FreeExam {
 	// will become 15, then 10 and non-static constructor will be the last to change it to 5
 	public void question14(){
 
-		Class_q14 class_q14 = new Class_q14();
-		System.out.println(Class_q14.x);
+		myexamcloud.supportclasses.Class_q14 class_q14 = new myexamcloud.supportclasses.Class_q14();
+		System.out.println(myexamcloud.supportclasses.Class_q14.x);
 	}
 
 

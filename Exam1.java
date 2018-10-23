@@ -1,5 +1,9 @@
 package myexamcloud;
 
+import java.io.Console;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,18 +12,22 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
-import java.util.function.Supplier;
 import java.util.function.ToLongBiFunction;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import sun.dc.path.PathError;
 
 public class Exam1 {
 
@@ -284,5 +292,188 @@ public class Exam1 {
 
 		LocalDate ld = LocalDate.ofYearDay(2015, 1); //2015-10-27
 		System.out.print(ld);
+	}
+
+
+	//1. static final java.io.PrintStream out (System.out) - The "standard" output stream. This stream is
+	// already open and ready to accept output data. Typically this stream corresponds to display output or
+	// another output destination specified by the host environment or user.
+	//2. static final java.io.PrintStream err - The "standard" error output stream. This stream is already open and
+	// ready to accept output data.
+	//3. static final java.io.InputStream in -  The "standard" input stream. This stream is already open and ready to
+	// supply input data. Typically this stream corresponds to keyboard input or another input source
+	// specified by the host environment or user.
+	public void question16(){
+
+		PrintStream p_stream = System.out;
+		PrintStream err_stream = System.err;
+		InputStream in_stream = System.in;
+	}
+
+
+	//Interface methods are implicitly public. When you're overriding method from interface, you have to give the
+	// method access level which is WIDER OR THE SAME. So in the following overrided print can only be public.
+	public void question17(){
+
+	}
+
+	interface A1{
+		void print();
+	}
+	class B1{}
+	class C1 extends B1 implements A1{
+		@Override
+		public void print(){
+		}
+	}
+
+	//1. Period - A date-based amount of time in the ISO-8601 calendar system, such as '2 years, 3 months and 4 days'.
+	//1.1 - Period.ZERO - A constant for a period of zero.
+	//1.2 - getUnits() - Gets the set of units supported by this period. The supported units are YEARS, MONTHS and
+	// DAYS. They are returned in the order years, months, days.
+	public void question18(){
+
+		System.out.println(Period.ZERO.getUnits());
+	}
+
+
+	//1. Wildcard <? extends Number> for List does not mean "list of objects of different types, all of which extend Number".
+	// It means "list of objects of a single type which extends Number". Iy is not known at compile time what types
+	// will be added to this list so basically you CAN NOT add any valuest to the List<? extends Number>, but you can
+	// assign ANY type of list<? extends Number> to it - ArrayList<Long>() or ArrayList<Double>() etc.
+	//Practical usage of it is as a parameters to functions, like example below - sum() can take any type of List<?
+	// extends Number> without errors.
+	public void question19(){
+
+		List<? extends Number> list = new ArrayList<Integer>();
+		list = new ArrayList<Long>();
+		sum(list);
+		list = new ArrayList<Double>();
+		sum(list);
+		list = new ArrayList<Float>();
+		sum(list);
+		list = new ArrayList<Number>();
+		sum(list);
+		list = new ArrayList<BigDecimal>();
+		sum(list);
+
+		//list.add(new Integer(10)); //ERROR
+	}
+
+	public double sum(List<? extends Number> myList)
+	{
+		double sum = 0.0;
+		for (Number num : myList)
+		{
+			sum += num.doubleValue();
+		}
+		return sum;
+	}
+
+
+	//Interface variables are implicitly PUBLIC STATIC FINAL, so you can't change values of it after initialization.
+	public void question20(){
+
+	}
+
+	interface I2{
+		int j = 1;
+		void substract();
+	}
+
+	class A20 implements I2{
+		public void substract(){
+			//j--; ERROR
+		}
+	}
+
+
+	//1. VARIABLES ACCESSED FROM THE INNER CLASS SHOULD BE FINAL OR EFFECTIVELY FINAL. So here variable "u" can not
+	// be accessed from inner class because it is not FINAL.
+	public static void question21(int u, final int y){
+
+		int x = 10;
+
+		class Cal{
+			public void get(){
+				int d = x;
+				//int d1 = u; //ERROR
+				int d2 = y;
+			}
+		}
+		u = x + 1;
+	}
+
+
+	//1. public void forEach(Consumer<? super T> action)
+	//2. public interface Consumer<T> - Represents an operation that accepts a single input argument and returns no
+	// result. Unlike most other functional interfaces, Consumer is expected to operate via side-effects.
+	public void question22(){
+
+		List<Integer> list = new ArrayList<>();
+		list.add(1);
+		list.add(2);
+
+		list.forEach(x -> x+=x);
+
+	}
+
+
+	//1. Duration.ofDays(5); - prints PT120H
+	//2. Duration.ofHours(5); - prints PT5H
+	//3. Duration.ofMinutes(5); - prints PT5M
+	//4. Duration.ofSeconds(5); - prints PT5S
+	//4.1 Duration.ofSeconds(400); - prints PT6M40S
+	//5. Duration.ofMillis(5); - prints PT0.005S
+	//6. Duration.ofNanos(5); - prints PT0.000000005S
+	//To summarize: it all prints in hours, minutes and seconds. Duration.ofSeconds(400) - is PT6M40S, same when
+	// passing other units.
+	public void question23(){
+
+		Duration duration = Duration.ofSeconds(400);
+		System.out.print(duration);
+
+	}
+
+
+	//1. char[] readPassword(String fmt, Object... args) Provides a formatted prompt, then reads a password or
+	// passphrase from the console with echoing disabled.
+	public void question24(){
+
+		Console con = System.console();
+		//String s = con.readPassword(); ERROR
+
+	}
+
+
+	public void question25(){
+
+		Consumer<Integer> con = System.out::print;
+		Consumer<Integer> cons = con.andThen(in -> System.out.print(in*2));
+
+		List<Integer> ins = new ArrayList<>();
+		ins.add(1);ins.add(2);ins.add(3);
+		ins.forEach(cons); //122436
+	}
+
+
+	//1. static LocalDate parse(@NotNull CharSequence text) Obtains an instance of LocalDate from a text string such
+	// as 2007-12-03. The string must represent a valid date and is parsed using
+	//2. LocalDate public java.time.Month getMonth() - Gets the month-of-year field using the Month enum.
+	public void question26(){
+
+		LocalDate date = LocalDate.parse("2014-12-31");
+		date = date.plusDays(2);
+		System.out.print(date.getYear() + " " + date.getMonth() + " " + date.getDayOfMonth());
+	}
+
+
+	//1. Period ofDays(int days) - Obtains a Period representing a number of days. So this is just days.
+	public void question27(){
+
+		Period p = Period.ofDays(3);
+		System.out.println(p);
+		System.out.println(p.plusDays(403)); //P406D
+
 	}
 }
