@@ -1,18 +1,26 @@
 package myexamcloud;
 
 import java.io.Console;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.nio.file.FileStore;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttributeView;
+import java.nio.file.attribute.FileStoreAttributeView;
+import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -26,10 +34,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.ToLongBiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-import sun.dc.path.PathError;
+import supportclasses.Single;
+import supportclasses.package1.ClassFromP1;
+import supportclasses.package2.ClassFromP2;
 
 public class Exam1 {
 
@@ -278,6 +289,13 @@ public class Exam1 {
 	//2. abstract class ZoneId - A time-zone ID, such as Europe/Paris.
 	// 2.1 static ZoneId of(String zoneId, Map<String, String> aliasMap) Obtains an
 	// instance of ZoneId using its ID using a map of aliases to supplement the standard zone IDs.
+	//....................
+	//3. abstract class ZoneId - A ZoneId is used to identify the rules used to convert between an Instant and a
+	// LocalDateTime. This abstract class has two implementations, both of which are IMMUTABLE and THREAD-SAFE.
+	// There are two distinct types of ID:
+	// 3.1 Fixed offsets - a fully resolved offset from UTC/Greenwich, that uses the same offset for all local
+	// date-times
+	// 3.2 Geographical regions - an area where a specific set of rules for finding the offset from UTC/Greenwich apply
 	public void question14(){
 
 		Map<String, String> zid = ZoneId.SHORT_IDS;
@@ -499,10 +517,94 @@ public class Exam1 {
 	}
 
 
+	//1. Optional:
+	//1.1 void ifPresent(Consumer<? super T> consumer) - If a value is present, invoke the specified
+	// consumer with the value, otherwise do nothing. So in the following case it will print the value if it will
+	// more than 11. Because this function is void - you can't invoke any function on it.
+	//1.2. public T orElse(T other) - Return the value if present, otherwise return other.
 	public void question29(){
 
-		Optional<Integer> ops = Optional.of(12);;
+		Optional<Integer> ops = Optional.of(12);
 
-		ops.filter(p -> p > 11).ifPresent(x -> System.out.print(x));
+		ops.filter(p -> p > 11).ifPresent(System.out::print); //print 12
+		int i = ops.filter(p -> p > 11).orElse(100); //return 12
 	}
+
+
+	//1. public class File - An abstract representation of file and directory pathnames. Can read parameters from a
+	// file (canRead, canWrite, getPath, getName, exists, length), can set some attributes (setReadable, setReadonly
+	// etc.) can do manipulations like delete and rename.
+	//2. abstract class FileStore extends Object - Storage for files. A FileStore represents a storage pool, device,
+	// partition, volume, concrete file system or other implementation specific means of file storage. You can
+	// instantiate it for example like this - FileStore store = Files.getFileStore(currentPath);
+	//3. final class Files extends Object - This class consists exclusively of static methods that operate on files,
+	// directories, or other types of files. Like copy, delete etc. Remember about IOException and others.
+	public void question30(){
+
+		File file = new File("files//new.txt");
+		boolean b = file.exists();
+		System.out.println(getFileStoreType(file.getPath()));
+		//Files.delete(file.toPath().toAbsolutePath());
+	}
+
+	public String getFileStoreType(final String path) {
+		File diskFile = new File(path);
+		if (!diskFile.exists()) {
+			diskFile = diskFile.getParentFile();
+		}
+		Path currentPath = diskFile.toPath().toAbsolutePath();
+		if (currentPath.isAbsolute() && Files.exists(currentPath)) {
+			try {
+				FileStore store = Files.getFileStore(currentPath);
+				return store.type();
+			} catch (IOException e) {
+				return null;
+			}
+		}
+		return null;
+	}
+
+
+	//1. Protected variables can only be accessed through INHERITANCE, and can not be acessed through object
+	// reference as below - it causes compilation error.
+	public void question31(){
+
+		ClassFromP1 cp1 = new ClassFromP1();
+		ClassFromP2 cp2 = new ClassFromP2();
+
+		//cp2.j = 5;
+	}
+
+
+	//To create a singleton class:
+	//1. Create a class
+	//2. Create an empty PRIVATE/PROTECTED constructor inside
+	//3. Create a PRIVATE STATIC field of type from step 1 inside and assign NULL to it
+	//4. Create a PUBLIC STATIC getInstance method of type from step 1 inside:
+	//5. In getInstance():
+	// 5.1 if variable from step 3 is NULL - assign new instance to it
+	// 5.2 return variable from step 3
+	public void question32(){
+
+		Single single = Single.getInstance();
+		Single single2 = Single.getInstance();
+
+		System.out.println(single == single2); //true
+	}
+
+
+	//1. IntStream:
+	// 1.1 - IntStream rangeClosed(int startInclusive, int endInclusive) Returns a sequential ordered IntStream from
+	// startInclusive (inclusive) to endInclusive (inclusive) by an incremental step of 1.
+	//2. public static <T> Collector<T, ?, Map<Boolean, List<T>>> partitioningBy(.Predicate<? super T>
+	// predicate) - Returns a Collector which partitions the input elements according to a Predicate, and organizes
+	// them into a Map<Boolean, List<T>>. There are no guarantees on the type, mutability, serializability,
+	// or thread-safety of the Map returned.
+	// So in the example below map will contain 2 lists - one of them will be even and another not even
+	public void question33(){
+
+		IntStream ints = IntStream.rangeClosed(3, 6);
+		Map<Boolean, List<Integer>> map = ints.boxed().collect(Collectors.partitioningBy(in -> in%2 == 0));
+	}
+
 }
