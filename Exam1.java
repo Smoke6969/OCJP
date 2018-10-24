@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
@@ -605,6 +606,17 @@ public class Exam1 {
 
 		IntStream ints = IntStream.rangeClosed(3, 6);
 		Map<Boolean, List<Integer>> map = ints.boxed().collect(Collectors.partitioningBy(in -> in%2 == 0));
+	}
+
+
+	//1.OptionalInt findAny() - Returns an OptionalInt describing some element of the stream, or an empty OptionalInt
+	// if the stream is empty.
+	public void question34(){
+
+		IntStream ints = IntStream.of(3,8,4,1,0,7,2).sorted();
+		OptionalInt optionalInt = ints.limit(3).findAny();
+		int i = optionalInt.getAsInt(); //returns 0
+		System.out.println(optionalInt);
 	}
 
 }
