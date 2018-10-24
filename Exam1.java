@@ -9,16 +9,12 @@ import java.math.BigDecimal;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttributeView;
-import java.nio.file.attribute.FileStoreAttributeView;
-import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
@@ -34,10 +30,12 @@ import java.util.OptionalInt;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
+import java.util.function.LongPredicate;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import supportclasses.Single;
 import supportclasses.package1.ClassFromP1;
@@ -617,6 +615,38 @@ public class Exam1 {
 		OptionalInt optionalInt = ints.limit(3).findAny();
 		int i = optionalInt.getAsInt(); //returns 0
 		System.out.println(optionalInt);
+	}
+
+
+	//1. LongStream:
+	//1.1 static LongStream range(long startInclusive, long endExclusive) - Returns a sequential ordered
+	// LongStream from startInclusive (inclusive) to endExclusive (exclusive) by an incremental step of 1.
+	//1.2  LongStream filter(LongPredicate predicate) - Returns a stream consisting of the elements
+	// of this stream that match the given predicate. The main thing in this question is that LongPredicate IS NOT
+	// THE SAME as Predicate<Long>
+	public void question35(){
+
+		LongStream longs = LongStream.range(1,4);
+		LongPredicate pre = it -> it % 2 == 0;
+		longs.filter(pre).forEach(System.out::print);
+	}
+
+
+	//1. To map String elements to a Stream of Integers we have to use map method:
+	// <R> map(java.util.function.Function<? super T, ? extends R> mapper) - Returns a stream consisting of the results
+	// of applying the given function to the elements of this stream.
+	//2. Integer decode(@NotNull String nm) throws NumberFormatException Decodes a String into an Integer. Accepts
+	// decimal, hexadecimal, and octal numbers given by the following grammar:
+	//3. int parseInt(@NotNull String s) throws NumberFormatException - Parses the string argument as a signed decimal
+	// integer.
+	//4. Difference between Integer::decode and Integer::parseInt is in that the Integer::parseInt returns primitive
+	// int and Integer::decode returns boxed Integer. Howewer both will work fine with map method because boxing in
+	// java is automatic.
+	public void question36(){
+
+		Stream<String> strings = Stream.of("1", "2", "3", "4");
+		Stream<Integer> integerStream1 = strings.map(Integer::decode);
+		Stream<Integer> integerStream2 = strings.map(Integer::parseInt);
 	}
 
 }
