@@ -21,10 +21,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.ToLongBiFunction;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import sun.dc.path.PathError;
@@ -475,5 +477,32 @@ public class Exam1 {
 		System.out.println(p);
 		System.out.println(p.plusDays(403)); //P406D
 
+	}
+
+
+	//1. IntStream range(int startInclusive, int endExclusive) Returns a sequential ordered IntStream from
+	// startInclusive (inclusive) to endExclusive (exclusive) by an incremental step of 1. So IntStream.range(1, 4);
+	// returns stream of 1, 2, 3
+	//2. IntStream peek(IntConsumer action) Returns a stream consisting of the elements of this
+	// stream, additionally performing the provided action on each element as elements are consumed from the
+	// resulting stream.
+	//3. IntStream.peek() - PEEK is an INTERMEDIATE Operation while FOREACH is a TERMINAL operation, the execution
+	// flow is the following:
+	// for(int i = startInclusive(1), i < endExclusive(4); i++){
+	//      peek(....);
+	//      forEach(...);
+	// }
+	public void question28(){
+
+		IntStream ints = IntStream.range(1, 4);
+		ints.peek(s -> System.out.print(s*2)).forEach(System.out::print);
+	}
+
+
+	public void question29(){
+
+		Optional<Integer> ops = Optional.of(12);;
+
+		ops.filter(p -> p > 11).ifPresent(x -> System.out.print(x));
 	}
 }
