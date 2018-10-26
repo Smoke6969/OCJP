@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
@@ -20,14 +21,11 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.LongSummaryStatistics;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
+import java.util.concurrent.RecursiveTask;
 import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.LongPredicate;
@@ -46,6 +44,7 @@ public class Exam1 {
 
 	//1. When initializing a String array - values in array are null
 	//2. You can't put null as value into ConcurrentHashMap due to RUNTIME NullPointerException
+	//3. NOTE that HashMap allow nulls, so this code would work fine with HashMap, but not with ConcurrentHashMap
 	public void question1(){
 
 		String s[] = new String[2];
@@ -648,6 +647,71 @@ public class Exam1 {
 		Stream<String> strings = Stream.of("1", "2", "3", "4");
 		Stream<Integer> integerStream1 = strings.map(Integer::decode);
 		Stream<Integer> integerStream2 = strings.map(Integer::parseInt);
+	}
+
+
+	//1. Stream<T> filter(Predicate<? super T> predicate) Returns a stream consisting of the
+	// elements of this stream that match the given predicate. This is an intermediate operation.
+	// INTERMEDIATE OPERATION RETURN A NEW STREAM. They are always lazy; executing an intermediate operation such as
+	// filter() does not actually perform any filtering, but instead creates a new stream that, when traversed,
+	// contains the elements of the initial stream that match the given predicate.
+	public void question37(){
+
+		Stream<String> strings = Stream.of("OCPJP", "OCAJP", "OCA", "OCP");
+		strings.filter(s -> s.endsWith("A")).filter(s -> s.startsWith("OCA")).forEach(System.out::println);
+
+	}
+
+
+	//1. If you'll create Locale object with just a single string - it will be a language, so getDisplayCountry()
+	// will return an empty string in this case
+	public void question38(){
+
+		Locale CAN = new Locale.Builder().setLanguage("EN").setRegion("CA").build();
+		System.out.println(CAN.getDisplayCountry());
+
+		Locale loc = new Locale("EN");
+		System.out.println(loc.getDisplayCountry());
+	}
+
+
+	//1. public class ForkJoinPool extends AbstractExecutorService - An ExecutorService for
+	// running ForkJoinTasks. A ForkJoinPool provides the entry point for submissions from non-ForkJoinTask
+	//clients, as well as management and monitoring operations.
+	//2. public interface ExecutorService extends Executor - An Executor that provides methods to manage termination
+	// and methods that can produce a Future for tracking progress of one or more asynchronous tasks.
+	//3. public abstract class ForkJoinTask<V>  - Abstract base class for tasks that run within a ForkJoinPool. A
+	// ForkJoinTask is a thread-like entity that is much lighter weight than a normal thread. Huge numbers of tasks
+	// and subtasks may be hosted by a small number of actual threads in a ForkJoinPool, at the price of some
+	// usage limitations.
+	//4. public abstract class RecursiveTask<V> extends java.util.concurrent.ForkJoinTask<V> - A recursive
+	// result-bearing ForkJoinTask.
+	//So basically to use ForkJoinPool you have to create class that extend RecursiveTask<T>, override protected T
+	// compute() and pass the object of this class to invoke method of FJP.
+	public void question39(){
+
+		ForkJoinPool fPool = new ForkJoinPool();
+		Remember rem = new Remember(12, 3);
+		int i = fPool.invoke(rem);
+		System.out.println(i);
+		int j = rem.compute();
+		System.out.println(j);
+	}
+
+	class Remember extends RecursiveTask<Integer>{
+
+		int num;
+		int devi;
+
+		public Remember(int i, int j){
+			num = i;
+			devi = j;
+		}
+
+		@Override
+		protected Integer compute() {
+			return num%devi;
+		}
 	}
 
 }
