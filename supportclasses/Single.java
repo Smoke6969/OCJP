@@ -1,4 +1,4 @@
-package supportclasses;
+package myexamcloud.supportclasses;
 
 public class Single {
 

@@ -1,8 +1,8 @@
-package supportclasses.package2;
+package myexamcloud.supportclasses.package2;
 
-import supportclasses.package1.*;
+import myexamcloud.supportclasses.package1.ClassFromP1;
 
-public class ClassFromP2 extends ClassFromP1 {
+public class ClassFromP2 extends ClassFromP1{
 
-	int x = j;
+	int i = j;
 }

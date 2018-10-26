@@ -37,9 +37,10 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import supportclasses.Single;
-import supportclasses.package1.ClassFromP1;
-import supportclasses.package2.ClassFromP2;
+import myexamcloud.supportclasses.Single;
+import myexamcloud.supportclasses.package1.ClassFromP1;
+import myexamcloud.supportclasses.package2.ClassFromP2;
+
 
 public class Exam1 {
 

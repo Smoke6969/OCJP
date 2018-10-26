@@ -1,4 +1,4 @@
-package supportclasses.package1;
+package myexamcloud.supportclasses.package1;
 
 public class ClassFromP1 {
 

@@ -254,8 +254,8 @@ public class FreeExam {
 	// will become 15, then 10 and non-static constructor will be the last to change it to 5
 	public void question14(){
 
-		myexamcloud.supportclasses.Class_q14 class_q14 = new myexamcloud.supportclasses.Class_q14();
-		System.out.println(myexamcloud.supportclasses.Class_q14.x);
+		myexamcloud.supportclasses1.Class_q14 class_q14 = new myexamcloud.supportclasses1.Class_q14();
+		System.out.println(myexamcloud.supportclasses1.Class_q14.x);
 	}
 
 
