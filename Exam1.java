@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -30,10 +31,14 @@ import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.ToLongBiFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
+import javax.print.DocFlavor;
 
 import myexamcloud.supportclasses.Single;
 import myexamcloud.supportclasses.package1.ClassFromP1;
@@ -713,5 +718,134 @@ public class Exam1 {
 			return num%devi;
 		}
 	}
+
+
+	//1. interface UnaryOperator<T> extends java.util.function.Function<T, T> - Represents an operation on a single
+	// operand that produces a result of the same type as its operand. This is a specialization of Function for the
+	// case where the operand and result are of the same type.
+	//2. static <T> UnaryOperator<T> identity() - Returns a unary operator that always returns its input argument. So
+	// passing the string to its apply method will return same string
+	public void question40(){
+
+		UnaryOperator<String> s = UnaryOperator.identity();
+		System.out.println(s.apply("1"));
+
+		UnaryOperator<String> i  = UnaryOperator.identity();
+		System.out.println(i.apply("java2s.com"));
+	}
+
+
+	//1. In code below Currency.PENNY and Currency.QUARTER are FINAL so you can't assign values there.
+	public void question41(){
+
+		//Currency.PENNY = Currency.QUARTER; //ERROR
+
+	}
+
+	public enum Currency{
+		PENNY(1), QUARTER(25);
+		private int value;
+
+		private Currency(int value){
+			this.value = value;
+		}
+	}
+
+
+	//1. interface Comparator<T> - A comparison function, which imposes a total ordering on some collection of objects.
+	// Comparators can be passed to a sort method (such as Collections.sort or Arrays.sort) to allow precise
+	// control over the sort order.
+	//1.1 <T> Comparator<T> comparingInt(@NotNull java.util.function.ToIntFunction<? super T> keyExtractor) - Accepts a
+	// function that extracts an int sort key from a type T, and returns a Comparator<T> that compares by that sort key.
+	//1.2 Comparator<T> thenComparing(@NotNull Comparator<? super T> other) - Returns a lexicographic-order comparator
+	// with another comparator. If this Comparator considers two elements equal, i.e. compare(a, b) == 0,
+	// other is used to determine the order.
+	//1.3 static final java.util.Comparator<String> CASE_INSENSITIVE_ORDER - A Comparator that orders String objects as
+	// by compareToIgnoreCase.
+	public void question42(){
+
+		List<String> ts = new ArrayList<>();
+		ts.add("AA");
+		ts.add("AB");
+		ts.add("abc");
+		ts.add("b");
+
+		Comparator<String> cmp = Comparator.comparingInt(String::length).thenComparing(String.CASE_INSENSITIVE_ORDER);
+
+		ts.sort(cmp);
+
+		System.out.println(ts.get(0));
+		System.out.println(ts.get(1));
+		System.out.println(ts.get(2));
+		System.out.println(ts.get(3));
+
+	}
+
+
+	//1. List<? super Number> means the list typed to either Number or superclass of Number which is Object. In this
+	// case it is safe to insert subclasses of Number into the list, but to get those elements, we need to cast them
+	// into a superclass of Number, so into Object.
+	public void question43(){
+
+		List<? super Number> list = new ArrayList<>();
+
+		list.add(new Integer(1));
+		list.add(new Double(2));
+
+		System.out.println(new Integer(1) instanceof Number);
+
+		for(Object o : list){
+			System.out.println(o);
+		}
+
+	}
+
+
+	//1. In the following example only numbers without fraction part will be printed. Because it is legal to do
+	public void question44(){
+
+		DoubleStream dbs = DoubleStream.of(1.0, 2.3, 2);
+		System.out.println(new Double(2.3) - new Double(2.3).intValue()); //0.2999999999999998
+		dbs.boxed().filter(d -> d - d.intValue() == 0).forEach(System.out::print); //1.02.0
+
+	}
+
+
+	//1. public static java.sql.Connection getConnection
+	// (@NotNull String url,
+	// @Nullable String user,
+	// @Nullable String password)
+	// throws java.sql.SQLException - Attempts to establish a connection to the given
+	// database URL. The
+	// DriverManager attempts to select an appropriate driver from the set of registered JDBC drivers.
+	public void question45(){
+
+		try {
+			DriverManager.getConnection("url", "root", "");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+	//1. IntStream peek(java.util.function.IntConsumer action) - Returns a stream consisting of the elements of this
+	// stream, additionally performing the provided action on each element as elements are consumed from the
+	// resulting stream.
+	//2. IntStream map(java.util.function.IntUnaryOperator mapper) - Returns a stream consisting of the results of
+	// applying the given function to the elements of this stream. This is an intermediate operation.
+	//3. boolean noneMatch(java.util.function.IntPredicate predicate) - Returns whether no elements of this stream
+	// match the provided predicate. May not evaluate the predicate on all elements if not necessary for determining
+	// the result. If the stream is empty then true is returned and the predicate is not evaluated.
+	//In the following example noneMatch will be true since we've multiplied all elements of the stream into 2, so
+	// division on 2 will not leave anything ((x%2 != 0) == false)
+	public void question46(){
+
+		IntStream in = IntStream.range(3, 8);
+		IntStream ins = in.peek(System.out::print).map(x -> x*2);
+		System.out.println(ins.noneMatch(x -> x%2 != 0)); //true
+
+	}
+
 
 }
