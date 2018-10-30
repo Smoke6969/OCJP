@@ -1,15 +1,16 @@
 package myexamcloud;
 
+import java.io.BufferedReader;
 import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,6 +19,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -25,20 +27,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Future;
 import java.util.concurrent.RecursiveTask;
-import java.util.function.Consumer;
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.LongPredicate;
-import java.util.function.ToLongBiFunction;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-
-import javax.print.DocFlavor;
 
 import myexamcloud.supportclasses.Single;
 import myexamcloud.supportclasses.package1.ClassFromP1;
@@ -848,4 +844,271 @@ public class Exam1 {
 	}
 
 
+	//1. R collect(java.util.stream.Collector<? super T, A, R> collector) - Performs a mutable reduction operation on
+	// the elements of this stream using a Collector. A Collector encapsulates the functions used as arguments to
+	// collect(Supplier, BiConsumer, BiConsumer), allowing for reuse of collection strategies and composition of
+	// collect operations such as multiple-level grouping or partitioning:
+	//1.1  Collector<T, ?, Double> averagingDouble(@Nullable java.util.function.ToDoubleFunction<?
+	// super T> mapper) - Returns a Collector that produces the arithmetic mean of a double-valued function applied
+	// to the input elements. If no elements are present, the result is 0.
+	//1.2 public interface Collector<T, A, R> - A mutable reduction operation that accumulates input elements into a
+	// mutable result container, optionally transforming the accumulated result into a final representation after all
+	// input elements have been processed. Reduction operations can be performed either sequentially or in parallel.
+	public void question47(){
+
+		double d = Stream.of("AA", "AAA", "aAA", "aaa").collect(Collectors.averagingDouble((String s) -> s.length()))
+		                 .intValue();
+		System.out.println(d);
+
+	}
+
+
+
+	//1. public static java.util.stream.Stream<java.nio.file.Path> find(Path start,
+	//                                                                  int maxDepth,
+	//                                                                  BiPredicate<Path, BasicFileAttributes> matcher,
+	//                                                                  FileVisitOption... options) throws java.io.IOException
+	// Return a Stream that is lazily populated with Path by searching for files in a file tree rooted at a given
+	// starting file. This method walks the file tree in exactly the manner specified by the walk method. For each
+	// file encountered, the given BiPredicate is invoked with its Path and BasicFileAttributes.
+	public void question48(){
+
+		try {
+			Stream<Path> out = Files.find(Paths.get("D:\\prj\\OCJP\\search_test"),
+			                              2,
+			                              (p, b) -> p.getFileName()
+			                                         .toString()
+			                                         .startsWith("h"));
+			out.forEach(path -> System.out.println(path));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	//1. interface Set<E> extends java.util.Collection<E> - A collection that contains no duplicate elements. More
+	// formally, sets contain no pair of elements e1 and e2 such that e1.equals(e2), and at most one null element.
+	// As implied by its name, this interface models the mathematical set abstraction.
+	//2. public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>, Cloneable, java.io.Serializable - A
+	// NavigableSet implementation based on a TreeMap. The elements are ordered using their natural ordering, or by a
+	// Comparator provided at set creation time, depending on which constructor is used.
+	//2.1 public TreeSet() - Constructs a new, empty tree set, sorted according to the natural ordering of its elements
+	// . All elements inserted into the set must implement the Comparable interface.
+	//--------------
+	// To summarize: because Set shouldn't contain duplicate elements, you can't just insert there own classes - you
+	// should implement Comparable interface in case you wan't to do that
+	public void question49(){
+
+		Set<Person> ts = new TreeSet<>();
+		ts.add(new Person("Alex"));
+		ts.add(new Person("Sam"));
+		ts.add(new Person("Sam"));
+		ts.add(new Person("Max"));
+		System.out.print(ts.size());
+	}
+
+	class Person implements Comparable<Person>{
+		public String name;
+		public Person(String name){
+			this.name = name;
+		}
+
+
+		@Override
+		public int compareTo(Person person) {
+			return name.compareTo(person.name);
+		}
+	}
+
+
+	//1. interface DoubleFunction<R> - Represents a function that accepts a double-valued argument and produces a
+	// result. This is the double-consuming primitive specialization for Function.
+	//1.1 R apply(double value) - Applies this function to the given argument.
+	//2. String valueOf(double d) - Returns the string representation of the double argument.
+	public void question50(){
+
+		DoubleFunction<String> df = String::valueOf;
+	}
+
+
+	//1. Locale:
+	//1.1 public Locale(@NotNull String language, @NotNull String country) - Construct a locale from language and
+	// country. This constructor normalizes the language value to lowercase and the country value to uppercase.
+	public void question51(){
+
+		Locale loc = new Locale("fr", "IN");
+		Locale loc1 = new Locale.Builder().setLanguage("fr").setRegion("IN").build();
+
+		System.out.println(loc.getDisplayCountry());
+		System.out.println(loc.getCountry());
+		System.out.println(loc.getDisplayLanguage());
+		System.out.println(loc.getLanguage());
+
+		System.out.println(loc1.getDisplayCountry());
+		System.out.println(loc1.getCountry());
+		System.out.println(loc1.getDisplayLanguage());
+		System.out.println(loc1.getLanguage());
+	}
+
+
+	//1. public final class Instant extends Object implements java.time.temporal.Temporal, java.time.temporal
+	// .TemporalAdjuster, Comparable<Instant>, java.io.Serializable - An instantaneous point on the time-line. This
+	// class models a single instantaneous point on the time-line. This might be used to record event time-stamps in
+	// the application.
+	//1.1 public static Instant now() - Obtains the current instant from the system clock.
+	//1.2 Instant plus(long amountToAdd, @NotNull java.time.temporal.TemporalUnit unit) - Returns a copy of this
+	// instant with the specified amount added. This returns an Instant, based on this one, with the amount in terms
+	// of the unit added. If it is not possible to add the amount, because the unit is not supported or for some
+	// other reason, an exception is thrown.
+	//NOTE: ChronoUnit.YEARS - NOT SUPPORTED
+	public void question52(){
+
+		Instant instant = Instant.now();
+		System.out.println(instant);
+		instant = instant.plus(10, ChronoUnit.DAYS);
+		System.out.println(instant);
+	}
+
+
+	//1. class BufferedReader extends java.io.Reader - Reads text from a character-input stream, buffering characters
+	// so as to provide for the efficient reading of characters, arrays, and lines.
+	//2. Files public static BufferedReader newBufferedReader(Path path) throws java.io.IOException - Opens a file for reading,
+	// returning a BufferedReader to read text from the file in an efficient manner. Bytes from the file are decoded
+	// into characters using the UTF-8 charset.
+	public void question53(){
+
+		try {
+			BufferedReader reader = Files.newBufferedReader(Paths.get("D:\\prj\\OCJP\\search_test"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	//interface IntFunction<R> - Represents a function that accepts an int-valued argument and produces a result. This
+	// is the int-consuming primitive specialization for Function. This is a functional interface whose functional
+	// method is apply(int).
+	public void question54(){
+
+		IntFunction intFunction1 = Integer::toString;
+		IntFunction intFunction2 = in -> in * 2;
+	}
+
+
+	//The following code will produce 7.25 as 29/4 = 7.25
+	//1. <T> java.util.stream.Collector<T, ?, Double> averagingInt(@Nullable java.util.function.ToIntFunction<? super
+	// T> mapper) - Returns a Collector that produces the arithmetic mean of an integer-valued function applied to the
+	// input elements. If no elements are present, the result is 0. In this case it's same as averagingDouble.
+	public void question55(){
+
+		Stream<String> stream = Stream.of("12", "13", "3", "1");
+		double avg = stream.collect(Collectors.averagingInt(in -> Integer.parseInt(in)));
+		System.out.println(avg);
+	}
+
+
+	//1. ConcurrentHashMap
+	//public ConcurrentHashMap(int initialCapacity,
+	//                         float loadFactor,
+	//                         int concurrencyLevel)
+	// Creates a new, empty map with an initial table size based on the given number of elements (initialCapacity),
+	//table density (loadFactor), and number of concurrently updating threads (concurrencyLevel).
+	public void question56(){
+
+		ConcurrentHashMap cMap = new ConcurrentHashMap(100, 0.8f, 15);
+	}
+
+
+	//1. Comparator public static <T, U extends Comparable<? super U>> Comparator<T> comparing(@NotNull java.util
+	// .function.Function<? super T, ? extends U> keyExtractor) - Accepts a function that extracts a Comparable sort
+	// key from a type T, and returns a Comparator<T> that compares by that sort key.
+	public void question57(){
+
+		Comparator<String> c3 = Comparator.comparing(e -> e.length());
+
+		System.out.println(c3.compare("aa", "aaa")); //-1
+		System.out.println(c3.compare("aaa", "aa")); //1
+		System.out.println(c3.compare("aaa", "aaa")); //0
+	}
+
+
+	// ACCESS MODIFIERS (public, protected, private) ARE NOT ALLOWED INSIDE METHOD, ONLY DEFAULT IS ALLOWED.
+	//STATIC ABSTRACT ALSO NOT ALLOWED
+	//STATIC IS ALLOWED (IF NOT ABSTRACT)
+	public void question58(){
+
+		abstract class A{
+			public abstract int calc(int x);
+		}
+
+		A a = new A() {
+			@Override
+			public int calc(int x) {
+				return y58 * x;
+			}
+			public void print(int x){
+				System.out.println(calc(x));
+			}
+		};
+
+		System.out.println(a.calc(2));
+	}
+
+	static int y58;
+
+
+	//1. interface IntUnaryOperator - Represents an operation on a single int-valued operand that produces an
+	// int-valued result. This is the primitive type specialization of UnaryOperator for int.
+	public void question59(){
+
+		IntUnaryOperator operator = primitive -> primitive * 2;
+	}
+
+
+	//System.out.println if passed arithmetic operation, first does the operation and only after that prints
+	public void question60(){
+
+		System.out.println(3 + 5); //8
+	}
+
+
+	//In the following example Set will contain 2 objects of Man, because hashCode returns an age, so 2 object with
+	// the same name but different age are different, so it is added to Set fine.
+	public void question61(){
+
+		HashSet<Man> set = new HashSet<>();
+		set.add(new Man("Sanka", 22));
+		set.add(new Man("Sanka", 24));
+		System.out.println(set.size());
+	}
+
+	class Man{
+
+		private String name;
+		private int age;
+
+		public Man(String name, int age) {
+			this.name = name;
+			this.age = age;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public int getAge() {
+			return age;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			return ((Man) o).getName().equals(this.name);
+		}
+
+		@Override
+		public int hashCode() {
+			return age;
+		}
+	}
 }
