@@ -403,7 +403,7 @@ public class Exam1 {
 
 	class A20 implements I2{
 		public void substract(){
-			//j--; ERROR
+			//System.out.print(j--);// ERROR
 		}
 	}
 
@@ -763,8 +763,8 @@ public class Exam1 {
 		List<String> ts = new ArrayList<>();
 		ts.add("AA");
 		ts.add("AB");
-		ts.add("abc");
-		ts.add("b");
+		ts.add("ABC");
+		ts.add("B");
 
 		Comparator<String> cmp = Comparator.comparingInt(String::length).thenComparing(String.CASE_INSENSITIVE_ORDER);
 
