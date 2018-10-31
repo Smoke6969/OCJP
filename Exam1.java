@@ -1111,4 +1111,20 @@ public class Exam1 {
 			return age;
 		}
 	}
+
+
+	public void question62(){
+
+		List<String> list = new ArrayList<>();
+		list.add("A");
+		list.add("C");
+		list.add("E");
+		list.add("D");
+
+		list.add(1, "B");
+		list.add(4, "F");
+
+		System.out.println(list);
+
+	}
 }
