@@ -117,7 +117,7 @@ public class Exam1 {
 	public void question5(){
 
 		LocalDate ld = LocalDate.of(2015, 12, 30);
-		long c = ChronoUnit.YEARS.between(ld, ld.minusDays(3));
+		long c = ChronoUnit.YEARS.between(ld, ld.minusDays(3)); //0
 		System.out.println(c);
 
 		System.out.println(ChronoUnit.HOURS.getDuration().getSeconds());
@@ -920,7 +920,6 @@ public class Exam1 {
 			return name.compareTo(person.name);
 		}
 	}
-
 
 	//1. interface DoubleFunction<R> - Represents a function that accepts a double-valued argument and produces a
 	// result. This is the double-consuming primitive specialization for Function.
