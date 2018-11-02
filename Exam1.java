@@ -168,7 +168,7 @@ public class Exam1 {
 		//DateFormat df = DateFormat.getInstance(DateFormat.SHORT);
 		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
 		try{
-			Date date2 = df.parse("13/11/89"); //1/11/90
+			Date date2 = df.parse("28/11/89"); //1/11/90
 			System.out.println(df.format(date2));
 		} catch (ParseException pe){
 			System.out.println("Parse exception");
