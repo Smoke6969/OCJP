@@ -1,5 +1,6 @@
 package myexamcloud;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -10,11 +11,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Exam2 {
@@ -239,6 +243,69 @@ public class Exam2 {
 
 		instant.plus(Duration.ofHours(5).plusMinutes(5));
 		instant.plus(5, ChronoUnit.HOURS).plus(5, ChronoUnit.MINUTES);
+	}
+
+
+	//To use filter method correctly, you should invoke it on Stream and then collect
+	public void question11(){
+
+		List<Integer> list = new ArrayList<>();
+		list.add(1);
+		list.add(3);
+		list.add(4);
+		list.add(5);
+		list.add(7);
+		list.add(8);
+
+		Predicate<Integer> predicate = p -> p > 4;
+
+		list = list.stream().filter(predicate).collect(Collectors.toList());
+
+		System.out.println(list);
+	}
+
+
+	//In the following example variable x will be taken from arguments
+	public void question12(){
+
+
+	}
+
+	static int x = 7;
+	public static int getSum(int x, IntStream ints){
+		//x = 4;
+		IntPredicate pre = in -> in > x;
+		return ints.filter(pre).sum();
+	}
+
+	//File:
+	// public boolean renameTo(@NotNull File dest) - Renames the file denoted by this abstract pathname.
+	public void question13(){
+
+		File file = new File("file.txt");
+		System.out.println(file.renameTo(new File("file1.txt")));
+
+	}
+
+
+	//You can actually cast creation of new object to Supplier, but you DO need to cast it.
+	public void question14(){
+
+		Supplier<User> sup = (Supplier<User>)new User("Test");
+
+	}
+
+	class User{
+
+		String name = "Unknown";
+
+		public User(String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
 	}
 
 }
