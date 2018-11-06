@@ -1,3 +1,4 @@
+/*
 package myexamcloud;
 
 import java.io.BufferedReader;
@@ -40,13 +41,14 @@ import myexamcloud.supportclasses.Single;
 import myexamcloud.supportclasses.package1.ClassFromP1;
 import myexamcloud.supportclasses.package2.ClassFromP2;
 
-
 public class Exam1 {
 
 	//1. When initializing a String array - values in array are null
 	//2. You can't put null as value into ConcurrentHashMap due to RUNTIME NullPointerException
 	//3. NOTE that HashMap allow nulls, so this code would work fine with HashMap, but not with ConcurrentHashMap
 	public void question1(){
+
+		Single single = Single.getInstance();
 
 		String s[] = new String[2];
 		s[1] = "B";
@@ -1127,3 +1129,4 @@ public class Exam1 {
 
 	}
 }
+*/
