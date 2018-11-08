@@ -1,6 +1,11 @@
 package myexamcloud;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -11,12 +16,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -308,4 +315,76 @@ public class Exam2 {
 		}
 	}
 
+	//The following code tries to modificate list while iterating throug it, which is forbidden. So the following
+	// code will throw ConcurrentModificationException.
+	public void question15(){
+
+		List<String> list = new ArrayList<>();
+		list.add("One");
+		list.add("Two");
+		list.add("Three");
+
+		UnaryOperator<String> operator = it -> it.toUpperCase();
+
+		list.forEach(it -> list.add(operator.apply(it)));
+
+		System.out.println(list);
+	}
+
+
+	//Properties:
+	// public void load(java.io.InputStream inStream) throws java.io.IOException - Reads a property list (key and
+	// element pairs) from the input byte stream.
+	// public String getProperty(@NotNull String key) - Searches for the property with the specified key in this
+	// property list.
+	public void question16(){
+
+		Path path = Paths.get("D:\\prj\\OCJP\\src\\myexamcloud\\files\\Sample_fr_FR.properties");
+		FileInputStream input;
+		Properties properties = new Properties();
+		try {
+			input = new FileInputStream(path.toFile());
+			properties.load(input);
+		} catch (java.io.IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println(properties.getProperty("Thank you"));
+		System.out.println(properties.getProperty("Good Morninng"));
+	}
+
+
+	//You can not use default method to override method from object. So here you can't do default boolean equals, but
+	// you can use equals without default;
+	public void question17(){
+
+	}
+
+	interface G{
+
+		/*default boolean equals(Object obj){
+
+		}*/
+	}
+
+
+	//Thread:
+	//public final void join(long millis) throws InterruptedException - Waits at most millis milliseconds for this
+	// thread to die. A timeout of 0 means to wait forever.
+	public void question18(){
+
+		Thread thrd = new Thread();
+		thrd.start();
+		try {
+			thrd.join(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	//PROTECTED and PRIVATE can't be used with top level classes.
+	public void question19(){
+
+	}
 }

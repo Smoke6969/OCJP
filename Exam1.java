@@ -1,4 +1,3 @@
-/*
 package myexamcloud;
 
 import java.io.BufferedReader;
@@ -1129,4 +1128,3 @@ public class Exam1 {
 
 	}
 }
-*/
