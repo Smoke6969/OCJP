@@ -2,21 +2,19 @@ package myexamcloud;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.MonthDay;
+import java.time.Year;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -27,6 +25,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import sun.util.calendar.Gregorian;
 
 public class Exam2 {
 
@@ -385,6 +385,140 @@ public class Exam2 {
 
 	//PROTECTED and PRIVATE can't be used with top level classes.
 	public void question19(){
+
+	}
+
+
+	//Year:
+	//1. public static Year of(int isoYear) - Obtains an instance of Year.
+	//2. public LocalDate atMonthDay(MonthDay monthDay) - Combines this year with a
+	// month-day to create a LocalDate.
+	//MonthDay:
+	//3. public static MonthDay of(int month, int dayOfMonth) - Obtains an instance of MonthDay.
+	public void question20(){
+
+		Year year = Year.of(2015);
+		LocalDate localDate = year.atMonthDay(MonthDay.of(3, 2));
+		System.out.println(localDate); //2015-03-02
+	}
+
+
+	//Collectors:
+	// 1. public static <T, K> Collector<T, ?, Map<K, java.util.List<T>>> groupingBy (Function<? super T, ? extends K> classifier)
+	// - Returns a Collector implementing a "group by" operation on input elements of type T, grouping elements
+	// according to a classification function, and returning the results in a Map.
+	//------------
+	//In simple words, the key for resulting map will be the result of Client::getName method, and value - the list
+	// with Client objects with that name. So basicalyy this method groups objects by some value.
+	public void question21(){
+
+		Stream<Client> clients = Stream.of(new Client(150, "Will", "vps server"),
+		                                   new Client(400, "Rachel", "Java"),
+		                                   new Client(420, "Rachel", "Shit"),
+		                                   new Client(300, "Anthony", "Configuration"));
+
+		Map<String, List<Client>> groups = clients.collect(Collectors.groupingBy(Client::getName));
+
+		System.out.println(groups);
+	}
+
+	class Client{
+		double budget;
+		String name, project;
+
+		public Client(double budget, String name, String project) {
+			this.budget = budget;
+			this.name = name;
+			this.project = project;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public String toString() {
+			return name + "," + budget;
+		}
+	}
+
+
+	//ResourceBundle:
+	//1. public static final ResourceBundle getBundle(String baseName) - Gets a
+	// resource bundle using the specified base name, the default locale, and the caller's class loader.
+	//NOTE: the name/path - myexamcloud.files.testBundle
+	//2. public abstract java.util.Enumeration<String> getKeys() - Returns an enumeration of the keys.
+	//3. NOTE: when passing locale - bundle looks in name, so _de means DE locale and it's different from de_CH
+	public void question22(){
+
+		Locale locale = new Locale("de");
+		ResourceBundle rb = ResourceBundle.getBundle("myexamcloud.files.testBundle", locale);
+		Enumeration <String> keys = rb.getKeys();
+
+		while (keys.hasMoreElements()) {
+			String key = keys.nextElement();
+			String value = rb.getString(key);
+			System.out.println(key + ": " + value);
+		}
+	}
+
+	//It is legal to use _ and $ as variable names. But remember illegal forward reference in classes and that the
+	// following will not work either.
+	public void question23(){
+
+		//int i = j; ERROR
+		int j = 5;
+	}
+
+
+	//public class AtomicInteger extends Number implements Serializable - An int value that may be updated
+	// atomically.
+	// There is a branch of research focused on creating non-blocking algorithms for concurrent environments.
+	// These algorithms exploit low-level atomic machine instructions such as compare-and-swap (CAS),
+	// to ensure data integrity.
+    // The most commonly used atomic variable classes in Java are AtomicInteger, AtomicLong, AtomicBoolean, and
+	// AtomicReference. These classes represent an int, long, boolean and object reference respectively which
+	// can be atomically updated.
+	// AtomicInteger:
+	// 1. public final boolean weakCompareAndSet(int expect, int update) - Atomically sets the value to the given
+	// updated value if the current value == the expected value.
+	//2. public final int addAndGet(int delta) - Atomically adds the given value to the current value.
+	public void question24(){
+
+		AtomicInteger value = new AtomicInteger(10);
+		value.weakCompareAndSet(10, 15);
+		System.out.println(value); //15
+		value.addAndGet(5);
+		System.out.println(value); //20
+	}
+
+
+	//Files:
+	// 1. public static Path move(Path source, Path target, CopyOption... options) throws IOException - Move or rename
+	// a file to a target file. In the following example if new.txt exists and old.txt is not - new.txt will be
+	// renamed to old.txt.
+	public void question25(){
+
+		Path path = Paths.get("new.txt");
+		try {
+			Files.move(path, Paths.get("old.txt"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+	//Calendar.APRIL indicates the fourth moth, but actually contains a value 3 inside:
+	// public static final int APRIL = 3 - Value of the MONTH field indicating the fourth month of the year in the
+	// Gregorian and Julian calendars, so it's zero-based and LocalDate is not zero-based, so although the code
+	// compiles fine, is will create a march, not april local date.
+	//LocalDate.of also checks if the arguments are correct, so if you'll try creating dayOfMonth more that possible
+	// - you'll get exception.
+	public void question26(){
+
+		LocalDate date = LocalDate.of(2015, Calendar.APRIL, 31); //2015-03-31
+		System.out.println(date);
 
 	}
 }
