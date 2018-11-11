@@ -521,4 +521,14 @@ public class Exam2 {
 		System.out.println(date);
 
 	}
+
+
+	public void question27(){
+
+		String s1 = "A" + "BC";
+		String s2 = "AB" + "C";
+		String s3 = new String("ABC");
+		boolean b1 = s1 == s2;
+		boolean b2 = s1 == s3;
+	}
 }
