@@ -15,14 +15,9 @@ import java.time.Year;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -530,5 +525,136 @@ public class Exam2 {
 		String s3 = new String("ABC");
 		boolean b1 = s1 == s2;
 		boolean b2 = s1 == s3;
+	}
+
+
+	public void question28(){
+
+		Stream<Trd> list = Stream.of(new Trd(2, 3, "Six"),
+		                             new Trd(1, 4, "Four"),
+		                             new Trd(5, 2, "Ten"));
+
+		DoubleStream dbs = list.mapToDouble(it -> it.getSum());
+		Stream sums = list.map(Trd::getSum);
+	}
+
+	class Trd{
+
+		public Trd(int a, int b, String id) {
+			this.a = a;
+			this.b = b;
+			this.id = id;
+		}
+
+		int a;
+		int b;
+		String id;
+		double sum;
+
+
+		public double getSum() {
+			return a*b;
+		}
+	}
+
+
+	//Collections:
+	//1. public static <T> void sort(List<T> list, Comparator<? super T> c) - Sorts the specified list according to the
+	// order induced by the specified comparator.
+	//The code above works correctly because Comparator's compare method takes 2 arguments of the same type and return
+	// int. So here Bifunction's apply method does the same - takes 2 arguments takes 2 arguments of the same type
+	// (String) and return int. But list will be sorted by length since Integer.compare is used.
+	public void question29(){
+
+		List<String> names = new ArrayList<>();
+		names.add("Shane");
+		names.add("Rachel");
+		names.add("Raj");
+
+		BiFunction<String, String, Integer> func = (s1, s2) -> Integer.compare(s1.length(), s2.length());
+		Collections.sort(names, func::apply);
+
+		System.out.println(names);
+	}
+
+
+	// Although it is redudant to use data type in lambda expression's body - it goes as generic type parameter, it
+	// is legal to do so, but in this case YOU HAVE TO USE PARENTHESES
+	public void question30(){
+
+		List<Integer> ints = new ArrayList<>();
+		ints.add(10);
+		ints.add(20);
+		ints.add(30);
+
+		Consumer<Integer> cons = (Integer it) -> System.out.println(it + "");
+
+		ints.forEach(cons);
+	}
+
+
+	//1. Static and default interface methods should have body, they can't be abstract
+	//2. Non static interface methods have access to static variables.
+	public void question31(){
+
+		//Below you can see by colours that static variables are overridden in child classes, like number variable
+
+	}
+
+
+	static class SomeClass implements Abstr {
+		static int number = 11;
+
+		public  int getNumber(){
+			return number;
+		}
+	}
+
+	interface Abstr{
+
+		static int number = 10;
+
+		public default int getNumber(){
+			return number;
+		}
+
+		//public static String illegal(); //ERROR
+	}
+
+	//public interface UnaryOperator<T> extends Function<T, T> - Represents an operation on a single
+	// operand that produces a result of the same type as its operand.
+	//So here UnaryOperator is equivalent to Function because Function's type parameters are the same
+	public void question32(){
+
+		Function<Double, Double> function = in -> Math.sqrt(in);
+		UnaryOperator<Double> unaryOperator = in -> Math.sqrt(in);
+	}
+
+
+	public void question33(){
+
+		List<String> lines = new ArrayList<>();
+		Stream<String> stringStream = Stream.of("sdfs", "dfs", "", "", "dfdsf");
+		stringStream.map(String::trim).filter(s -> !s.isEmpty()).forEach(lines::add);
+		System.out.println(lines);
+	}
+
+
+	//String:
+	//public String concat(@org.jetbrains.annotations.NotNull String str) - Concatenates the specified string to the
+	// end of this string.
+	//In the following example stream remains unchanged after peek, because concat just returns a new String and does
+	// nothing to the stream itself
+	public void question34(){
+
+		List<String> list = new ArrayList<>();
+		list.add("A");
+		list.add("B");
+		list.add("C");
+
+		list.stream().peek(s -> s.concat(s.toLowerCase())).parallel().forEach(System.out::println);
+
+		String s = "ABC";
+		String res = s.concat(s.toLowerCase());
 	}
 }

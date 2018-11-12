@@ -6,6 +6,6 @@ public class Main {
 
 		myexamcloud.Exam2 exam = new myexamcloud.Exam2();
 
-		exam.question27();
+		exam.question34();
 	}
 }
