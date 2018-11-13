@@ -6,12 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.MonthDay;
-import java.time.Year;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -656,5 +651,188 @@ public class Exam2 {
 
 		String s = "ABC";
 		String res = s.concat(s.toLowerCase());
+	}
+
+
+	public void question35(){
+
+		List<? super Integer> list = new ArrayList<>();
+		list.add(new Integer(10));
+	}
+
+
+	public void question36(){
+
+		List<? super Integer> list = new ArrayList<>();
+		list.add(new Integer(10));
+	}
+
+
+	//Predicate:
+	//1. public Predicate<T> and(Predicate<? super T> other) - Returns a composed predicate that represents a
+	// short-circuiting logical AND of this predicate and another. When evaluating the composed predicate, if
+	// this predicate is false, then the other predicate is not evaluated.
+	public void question37(){
+
+		List<Employee1> list = new ArrayList<>();
+		list.add(new Employee1("John", 12000));
+		list.add(new Employee1("Alice", 11000));
+		list.add(new Employee1("Dean", 16700));
+
+		Predicate<Employee1> nFilter = in -> in.name.startsWith("Al");
+		Predicate<Employee1> sFilter = in -> in.salary > 10000;
+
+		System.out.print("[");
+		list.forEach(it -> {
+			if(nFilter.and(sFilter).test(it)){
+				System.out.print(it + " ");
+			}
+		});
+		System.out.print("]");
+	}
+
+	class Employee1{
+		String name;
+		double salary;
+
+		public Employee1(String name, double salary) {
+			this.name = name;
+			this.salary = salary;
+		}
+
+		public String toString(){
+			return name + " - " + salary;
+		}
+	}
+
+
+	//Optional:
+	// 1. public static <T> Optional<T> of(@NotNull T value) - Returns an Optional with the specified present non-null
+	// value. NOTE: this method throws NullPointerException if value is NULL
+	//2. public static <T> Optional<T> ofNullable(@Nullable T value) - Returns an Optional describing the specified
+	// value, if non-null, otherwise returns an empty Optional.
+	public void question38(){
+
+		String[] arr = new String[3];
+
+		String result1 = Optional.ofNullable(arr[2]).orElse("Empty");
+		String result2 = Optional.of(arr[2]).orElse("Empty");
+
+		System.out.println(result1);
+	}
+
+
+	//HashSet:
+	// The HashSet allows NULL and not throwing exceptions when adding the same values, but it doesn't add copies even
+	// if it is NULL
+	public void question39(){
+
+		Set<String> set = new HashSet<>();
+		set.add("A");
+		set.add("B");
+		set.add(null);
+		set.add("C");
+		set.add("A");
+		set.add(null);
+
+		set.forEach(System.out::print);
+	}
+
+
+	//This is how you call default methods from interface without abstract methods
+	public void question40(){
+		new A(){}.print();
+	}
+
+	interface A{
+		default void print(){
+			System.out.println("A");
+		}
+	}
+
+
+	public void question41(){
+
+		Locale locale = new Locale("EN", "France");
+		System.out.println(locale.getDisplayLanguage(Locale.GERMAN)); //Englisch
+	}
+
+
+	//Map:
+	// 1. public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) - Attempts to
+	// compute a mapping for the specified key and its current mapped value (or null if there is no current mapping).
+	// For example, to either create or append a String msg to a value mapping:
+	// map.compute(key, (k, v) -> (v == null) ? msg : v.concat(msg))
+	//-------------
+	//In the following example everything works fine because BiFunction just returns string "Two" and maps it to the
+	// key 2. And because we've create BiFunction without type parameters, so it is BiFunction<Object, Object, Object>
+	public void question42(){
+
+		Map<Integer, String> map = new HashMap<>();
+		map.put(1, "One");
+		map.put(3, "Three");
+		map.put(4, "Four");
+
+		BiFunction func = (k, v) -> "Two";
+
+		map.compute(2, func);
+
+		System.out.println(map); //{1=One, 2=Two, 3=Three, 4=Four}
+	}
+
+
+	public void question43(){
+
+		LocalDate date1 = LocalDate.of(2015, 12, 25);
+		LocalDate date2 = LocalDate.of(2015, Calendar.DECEMBER, 25);
+
+		System.out.println(date1); //2015-12-25
+		System.out.println(date2); //2015-11-25
+
+	}
+
+
+	public void question44(){
+
+		LocalDate date1 = LocalDate.of(1989, 11, 28);
+		LocalDate date2 = LocalDate.of(2015, 11, 28);
+
+		System.out.println(Period.between(date1, date2).getYears()); //26
+	}
+
+
+	//You can not combine FINAL and ABSTRACT together, it will noty compile
+	public void question45(){
+
+	}
+
+	/*final abstract class Test{
+		public abstract void test();
+	}*/
+
+	//IntUnaryOperator:
+	// public abstract int applyAsInt(int operand) - Applies this operator to the given operand.
+	public void question46(){
+
+		IntUnaryOperator operator = it -> it * 2;
+		operator.applyAsInt(4);
+	}
+
+
+	//LocalTime:
+	//1. public static LocalTime of(int hour, int minute) - Obtains an instance of LocalTime from an hour and minute.
+	// This returns a LocalTime with the specified hour and minute. The second and nanosecond fields will be set to zero.
+	//Duration:
+	//2. public static Duration between(Temporal startInclusive, Temporal endExclusive) - Obtains a Duration
+	// representing the duration between two temporal objects.
+	// So in the following example result is -8 because end has more minutes than start
+	public void question47(){
+
+		LocalTime start = LocalTime.of(21, 10);
+		LocalTime end = LocalTime.of(12, 12);
+
+		long duration = Duration.between(start, end).toHours(); //-8
+
+		System.out.println(duration);
 	}
 }
