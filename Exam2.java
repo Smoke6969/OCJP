@@ -2,11 +2,16 @@ package myexamcloud;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -834,5 +839,122 @@ public class Exam2 {
 		long duration = Duration.between(start, end).toHours(); //-8
 
 		System.out.println(duration);
+	}
+
+
+	//Type 1: JDBC-ODBC bridge
+	//Type 2: partial Java driver
+	//Type 3: pure Java driver for database middleware
+	//Type 4: pure Java driver for direct-to-database
+	//Type 5: highly-functional drivers with superior performance
+	public void question48(){
+
+	}
+
+
+	//When compiling class with inner class, the following 2 files will be generated:
+	//OuterClass.class
+	//OuterClass$InnerClass.class
+	public void question49(){
+
+	}
+
+
+	//java.sql.Timestamp:
+	//public class Timestamp extends java.util.Date - A thin wrapper around java.util.Date that allows the JDBC API to
+	//identify this as an SQL TIMESTAMP value.
+	//1. public static Timestamp from(@NotNull java.time.Instant instant) - Obtains an instance of Timestamp from an
+	// Instant object. Basicaly used to create a Timestamp
+	public void question50(){
+
+		java.sql.Timestamp timestamp = java.sql.Timestamp.from(Instant.now());
+	}
+
+
+	//ZoneId:
+	//1. public static java.util.Set<String> getAvailableZoneIds() - Gets the set of available zone IDs. This set
+	// includes the string form of all available region-based IDs. Offset-based zone IDs are not included in the
+	// returned set. The ID can be passed to of(String) to create a ZoneId.
+	//Example of Set content is - Africa/Nairobi, America/Chicago, Asia/Almaty etc.
+	public void question51(){
+
+		Set<String> allZoneIds = ZoneId.getAvailableZoneIds();
+	}
+
+
+	//LocalDateTime:
+	/*1. public static LocalDateTime of(int year,
+										int month,
+										int dayOfMonth,
+										int hour,
+										int minute,
+										int second)
+	Obtains an instance of LocalDateTime from year, month, day, hour, minute and second, setting the nanosecond to
+	zero.
+
+	//Period:
+	 2. public static Period of(int years,
+								int months,
+								int days)
+	Obtains a Period representing a number of years, months and days.*/
+
+	//DateTimeFormatter:
+	//3. public static DateTimeFormatter ofLocalizedTime(FormatStyle timeStyle) - Returns a
+	// locale specific time format for the ISO chronology.
+
+	//So in the following question you should see that formatter gives the time only, without date, so utput is 9:10 PM
+	public void question52(){
+
+		LocalDateTime localDateTime = LocalDateTime.of(2014, 1, 1, 21, 10, 23);
+		Period period = Period.of(1, 1, 1);
+
+		localDateTime = localDateTime.plus(period);
+
+		DateTimeFormatter formatter1 = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT); //9:10 PM
+		DateTimeFormatter formatter2 = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT); //2/2/15
+
+		System.out.println(localDateTime.format(formatter1));
+		System.out.println(localDateTime.format(formatter2));
+	}
+
+
+	//Function:
+	//1. public <V> Function<V, R> compose(Function<? super V, ? extends T> before) - Returns a composed
+	// function that first applies the before function to its input, and then applies this function to the result.
+	// If evaluation of either function throws an exception, it is relayed to the caller of the composed function.
+	//So in the following case the first function applied will be converter and the second is area.
+	public void question53(){
+
+		Function<Integer, Double> area = in -> in / 2.0;
+		Function<String, Integer> converter = in -> Integer.valueOf(in);
+		Function<String, Double> combined = area.compose(converter);
+
+		System.out.println(combined.apply("7"));
+	}
+
+
+
+	//The order of try-catch blocks should go from child to parent (from FileNotFoundException to IOException)
+	// otherwise you'll get compilation error due to a unreachable catch block
+	public void question54(){
+
+		try{
+			FileReader reader = new FileReader("c://someshit.txt");
+		}catch (IOException ex){
+
+		}/*catch (FileNotFoundException ex){
+
+		}*/
+	}
+
+
+	public void question55(){
+
+		try{
+			throw new IOException();
+		} catch (IOException ex){
+			ex = new FileNotFoundException("No File");
+			System.out.println(ex.getMessage());
+		}
 	}
 }
