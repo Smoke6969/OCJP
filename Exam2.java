@@ -957,4 +957,140 @@ public class Exam2 {
 			System.out.println(ex.getMessage());
 		}
 	}
+
+
+	//Optional:
+	//1. public T get() - If a value is present in this Optional, returns the value, otherwise throws
+	// NoSuchElementException.
+	//In the example below there will be NoSuchElementException
+	public void question56(){
+
+		List<String> strings = new ArrayList<>();
+		strings.add("One");
+		strings.add(null);
+		strings.add("Two");
+		strings.add("Three");
+
+		Optional<String> op1 = Optional.ofNullable(strings.get(0));
+		Optional<String> op2 = Optional.ofNullable(strings.get(1));
+
+		System.out.println(op1.get());
+		System.out.println(op2.get());
+	}
+
+
+	//You can extend IOException, more than this, many exception classes extends in (e.g. FileNotFoundException).
+	//But if your code throws such exception (extended from IOExc.) - you can catch it either through extended
+	// exception or parent IOException
+	public void question57() throws CustomIOException, FileNotFoundException{
+
+		FileReader reader = new FileReader("c://file.tx");
+		throw new CustomIOException();
+	}
+
+	class CustomIOException extends IOException{
+		CustomIOException(){
+			super("Custom IO exception throwm");
+		}
+	}
+
+
+	//Files:
+	//1. public static Stream<Path> list(Path dir) throws IOException - Return a lazily populated Stream, the elements
+	// of which are the entries in the directory. The listing is not recursive.
+	//File:
+	//2. public Path toPath() - Returns a Path object constructed from the this abstract
+	// path. The resulting Path is associated with the default-filesystem.
+	public void question58() throws IOException {
+
+		File folder = new File("src");
+		Stream<Path> stream = Files.list(folder.toPath());
+	}
+
+
+	//Stream:
+	//1. public abstract boolean noneMatch(Predicate<? super T> predicate) - Returns whether no
+	// elements of this stream match the provided predicate. May not evaluate the predicate on all elements if not
+	// necessary for determining the result. If the stream is empty then true is returned and the predicate is not
+	// evaluated.
+	//So basically it returns TRUE only if predicate with each element of stream will return FALSE
+	public void question59(){
+
+		Stream<Client2> clients = Stream.of(new Client2(150, "Will", "vps server"),
+		                                   new Client2(400, "Rachel", "Java"),
+		                                   new Client2(420, "Rachel", "Shit"),
+		                                   new Client2(300, "Anthony", "Configuration"));
+
+		Predicate<Client2> func = it -> {
+			System.out.print(it.getName() + " ");
+			return it.getBudget() > 300;
+		};
+
+		boolean b = clients.noneMatch(func); //Will Rachel
+		System.out.println(b); //false
+	}
+
+	class Client2{
+		double budget;
+		String name, project;
+
+		public Client2(double budget, String name, String project) {
+			this.budget = budget;
+			this.name = name;
+			this.project = project;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public double getBudget() {
+			return budget;
+		}
+	}
+
+	//List:
+	//1. public void replaceAll(UnaryOperator<E> operator) - Replaces each element of this
+	// list with the result of applying the operator to that element. Errors or runtime exceptions thrown by the
+	// operator are relayed to the caller.
+	public void question60(){
+
+		List<String> list = Arrays.asList("One", "Two", "Three", "Four");
+		list.replaceAll(it -> it.toUpperCase());
+		System.out.println(list);
+	}
+
+
+	public void question61(){
+
+		List<Client3> clients = new ArrayList<>();
+		clients.add(new Client3(150, "Will", "vps server"));
+		clients.add(new Client3(400, "Rachel", "Java"));
+		clients.add(new Client3(420, "Rachel", "Shit"));
+		clients.add(new Client3(300, "Anthony", "Configuration"));
+
+		Collections.sort(clients, Comparator.comparing(Client3::getName));
+
+		System.out.println(clients);
+	}
+
+	class Client3{
+		double budget;
+		String name, project;
+
+		public Client3(double budget, String name, String project) {
+			this.budget = budget;
+			this.name = name;
+			this.project = project;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public String toString() {
+			return name + "," + budget;
+		}
+	}
 }
