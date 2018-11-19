@@ -42,7 +42,6 @@ public class Exam2 {
 		System.out.println(min);
 	}
 
-
 	public void question2(){
 
 		List<Trade> list = new ArrayList<>();
@@ -1092,5 +1091,16 @@ public class Exam2 {
 		public String toString() {
 			return name + "," + budget;
 		}
+	}
+
+	//1. You can't override default Object's methods as default in interfaces
+	public void question62(){
+
+	}
+
+	interface TSInt{
+		/*public default String toString(){
+			return "TS";
+		}*/
 	}
 }
