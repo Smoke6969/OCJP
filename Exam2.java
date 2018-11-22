@@ -1103,4 +1103,29 @@ public class Exam2 {
 			return "TS";
 		}*/
 	}
+
+
+	//Map:
+	//1. public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) If the
+	// specified key is not already associated with a value or is associated with null, associates it with the given
+	// non-null value. Otherwise, replaces the associated value with the results of the given remapping function,
+	// or removes if the result is null.
+	//-----
+	//In the following example the value of Key1 from numbers is null, so it maps value from numbers 2 with Key1, so
+	// it is three.
+	public void question63(){
+
+		Map<Integer, String> numbers = new HashMap<>();
+		Map<Integer, String> numbers2 = new HashMap<>();
+		numbers.put(1, null);
+		numbers.put(2, "Two");
+		numbers2.put(1, "Three");
+		numbers2.put(4, "Four");
+
+		BiFunction<String, String, String> func = (k, v) -> "Some random shit";
+		BiConsumer<Integer, String> cons = (k, v) -> numbers.merge(k, v, func);
+
+		numbers2.forEach(cons);
+		System.out.println(numbers); //{1=One, 2=Two, 3=Three, 4=Four}
+	}
 }
