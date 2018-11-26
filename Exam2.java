@@ -1128,4 +1128,15 @@ public class Exam2 {
 		numbers2.forEach(cons);
 		System.out.println(numbers); //{1=One, 2=Two, 3=Three, 4=Four}
 	}
+
+
+	//File:
+	// .
+	public void question64(){
+
+		Stream<String> stringStream = Stream.of("12", "13", "3", "1");
+
+		//int avg = stringStream.collect(Collectors.averagingInt(s -> Integer.parseInt(s)));
+
+	}
 }
