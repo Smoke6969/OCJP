@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.IntUnaryOperator;
 
 public class Exam3 {
 
@@ -112,4 +114,52 @@ public class Exam3 {
 			return ((Person)o).getName().equals(this.getName());
 		}
 	}
+
+
+	public void question5() {
+
+
+		List<Integer> list = new ArrayList<>();
+		list.add(1);
+		list.add(2);
+		list.add(3);
+		list.add(4);
+		list.add(5);
+		list.add(6);
+		list.add(7);
+		list.add(8);
+
+		list.stream().parallel().limit(3).forEach(System.out::print);
+	}
+
+
+	//In following example a++ is a post-increment, so basically it returns a and then does increment, so output of
+	// function will be the same as parameter.
+	public void question6() {
+
+		increment(Exam3::mul, 1);
+		System.out.print(mul(2)); //2
+	}
+
+	public static int mul(int a){
+		return a++;
+		//return ++a;
+	}
+	public void increment(IntUnaryOperator operator, int a){
+		System.out.print(operator.applyAsInt(a));
+	}
+
+
+	//Here orElse returns integer, not optional
+	public void question7() {
+
+		List<Integer> list = new ArrayList<>();
+		list.add(1);
+		list.add(2);
+		list.add(3);
+
+		//Optional<Integer> op = Optional.of(list.get(2)).orElse(0); //Error
+
+	}
+
 }
