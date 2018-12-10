@@ -10,14 +10,19 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
+import java.time.MonthDay;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.ResourceBundle;
+import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
@@ -191,5 +196,65 @@ public class Exam3 {
 
 	}
 
+
+	//ResourceBundle:
+	//Resource bundles contain locale-specific objects. When your program needs a locale-specific resource, a
+	// String for example, your program can load it from the resource bundle that is appropriate for the
+	// current user's locale.
+	//ResourceBundle.Control:
+	//defines a set of callback methods that are invoked by the ResourceBundle.getBundle factory methods during
+	// the bundle loading process. In other words, a ResourceBundle.Control collaborates with the factory
+	// methods for loading resource bundles.
+	//FORMAT_CLASS The class-only format List containing "java.class".
+	//
+	//So with the following ResourceBundle.Control you can't use properties files, only the class files
+	public void question10() {
+
+		ResourceBundle.Control rbc = ResourceBundle.Control.getControl(ResourceBundle.Control.FORMAT_CLASS);
+
+	}
+
+	//The following class creation syntax is legal:
+	public void question11() {
+
+		Exam3.Test t = new Exam3().new Test();
+		//same as
+		Test t1 = new Test();
+	}
+
+	class Test{
+
+	}
+
+
+	//LocalDate:
+	//String format(@NotNull java.time.format.DateTimeFormatter formatter) - Formats this date using the specified
+	// formatter. This date will be passed to the formatter to produce a string.
+	public void question12() {
+
+		Year year = Year.of(2014);
+		String result = year.atMonthDay(MonthDay.of(3, 3)).format(DateTimeFormatter.BASIC_ISO_DATE);
+		System.out.println(result);
+	}
+
+
+	//Basically dividing integers 7 / 2 = 3;
+	public void question13() {
+
+		Function<Integer, Double> func = i -> new Double(i/2);
+		//Function<Integer, Double> func = i -> i/2; //Error
+		System.out.println("Radius = " + func.apply(7)); //3.0
+
+		int seven = 7;
+		int three = seven / 2;
+	}
+
+	//java.util.OptionalDouble average() - Returns an OptionalDouble describing the arithmetic mean of elements of this
+	// stream, or an empty optional if this stream is empty. This is a special case of a reduction.
+	public void question14() {
+
+		IntStream stream = IntStream.rangeClosed(1, 4);
+		double average = stream.average().getAsDouble();
+	}
 
 }
