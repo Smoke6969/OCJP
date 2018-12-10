@@ -9,6 +9,9 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -16,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.IntUnaryOperator;
+import java.util.function.ToIntFunction;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Exam3 {
 
@@ -159,7 +165,31 @@ public class Exam3 {
 		list.add(3);
 
 		//Optional<Integer> op = Optional.of(list.get(2)).orElse(0); //Error
+	}
+
+
+	//ToIntFunction:
+	//Represents a function that produces an int-valued result. This is the int-producing primitive specialization for Function.
+	//Because ToIntFunction produces primitive result - method boxed() should be called to assugn it's result to Stream<Integer>
+	public void question8() {
+
+		Stream<Double> doubleStream = Stream.of(10.0, 20.1, 30.2);
+		ToIntFunction<Double> func = d -> d.intValue();
+		Stream<Integer> ints = doubleStream.mapToInt(func).boxed();
+		ints.forEach(System.out::print);
 
 	}
+
+
+	//To convert LocalDate to LocalDateTime, use the following method on LocalDate:
+	//public java.time.LocalDateTime atTime(int hour, int minute)
+	public void question9() {
+
+		LocalDate date = LocalDate.of(2018, 11, 10);
+		ZoneId zid = ZoneId.of("Europe/Paris");
+		ZonedDateTime zdt = ZonedDateTime.of(date.atTime(12, 00), zid);
+
+	}
+
 
 }
