@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalDouble;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
@@ -275,6 +278,50 @@ public class Exam3 {
 		IntStream ints = IntStream.range(1, 10);
 		IntPredicate predicate = i -> i > 5;
 		ints.filter(predicate.negate()).forEach(s -> System.out.print(s + "")); //12345
+	}
+
+
+	//interface AutoCloseable - An object that may hold resources (such as file or socket handles) until it is closed.
+	// The close() method of an AutoCloseable object is called automatically when exiting a try-with-resources
+	// block for which the object has been declared in the resource specification header.
+	public void question17() { //123
+
+		try(Resource rs = new Resource()){
+			rs.print();
+		}catch (Exception ex){
+
+		}
+
+		System.out.print("3");
+	}
+
+	class Resource implements AutoCloseable{
+
+		@Override
+		public void close() throws Exception {
+			System.out.print("2");
+		}
+
+
+		public void print() {
+			System.out.print("1");
+		}
+	}
+
+
+	//1. ConcurrentHashMap - A hash table supporting full concurrency of retrievals and high expected concurrency for
+	// updates.
+	//2. ConcurrentSkipListMap - A scalable concurrent ConcurrentNavigableMap implementation. The map is sorted
+	// according to the natural ordering of its keys, or by a Comparator provided at map creation time, depending
+	// on which constructor is used. This class implements a concurrent variant of SkipLists providing expected
+	// average log(n) time cost for the containsKey, get, put and remove operations and their variants. Insertion,
+	// removal, update, and access operations safely execute concurrently by multiple threads.
+	//ConcurrentLinkedQueue - An unbounded thread-safe queue based on linked nodes.
+	public void question18() {
+
+		ConcurrentHashMap<String, String> concurrentHashMap = new ConcurrentHashMap();
+		ConcurrentSkipListMap<String, String> concurrentSkipListMap  = new ConcurrentSkipListMap<>();
+		ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
 	}
 
 }
