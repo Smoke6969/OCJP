@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.OptionalDouble;
 import java.util.ResourceBundle;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
@@ -255,6 +256,25 @@ public class Exam3 {
 
 		IntStream stream = IntStream.rangeClosed(1, 4);
 		double average = stream.average().getAsDouble();
+	}
+
+
+	//LocalDate doesn't support hours!
+	public void question15() {
+
+		LocalDate date = LocalDate.parse("2014-12-31");
+		date = date.plusDays(2);
+		System.out.println(date);
+	}
+
+
+	//IntPredicate negate() - Returns a predicate that represents the logical negation of this predicate. In other
+	// words - when predicate returns true, the negation is false and otherwise.
+	public void question16() {
+
+		IntStream ints = IntStream.range(1, 10);
+		IntPredicate predicate = i -> i > 5;
+		ints.filter(predicate.negate()).forEach(s -> System.out.print(s + "")); //12345
 	}
 
 }
