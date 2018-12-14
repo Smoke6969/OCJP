@@ -324,4 +324,24 @@ public class Exam3 {
 		ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
 	}
 
+	//Stream:
+	//1. mapToInt(ToIntFunction<? super T> mapper) -Returns an IntStream consisting of the results of applying the given function to the elements of
+	// this stream. This is an intermediate operation.
+	//2. flatMapToInt(Function<? super T, ? extends IntStream> mapper - Returns an IntStream consisting of the results of replacing each element of this stream with
+	// the contents of a mapped stream produced by applying the provided mapping function to each element.
+	public void question19() { //123
+
+		List<String> list = new ArrayList<>();
+		list.add("1");
+		list.add("2");
+		list.add("3");
+		list.add("4");
+
+		ToIntFunction<String> func1 = i -> Integer.parseInt(i);
+		IntStream stream1 = list.stream().mapToInt(func1);
+
+		Function<String, IntStream> func2 = i -> IntStream.of(Integer.parseInt(i));
+		IntStream stream2 = list.stream().flatMapToInt(func2);
+	}
+
 }
