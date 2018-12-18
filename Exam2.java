@@ -1,3 +1,4 @@
+/*
 package myexamcloud;
 
 import java.io.File;
@@ -356,9 +357,11 @@ public class Exam2 {
 
 	interface G{
 
-		/*default boolean equals(Object obj){
+		*/
+/*default boolean equals(Object obj){
 
-		}*/
+		}*//*
+
 	}
 
 
@@ -810,9 +813,11 @@ public class Exam2 {
 
 	}
 
-	/*final abstract class Test{
+	*/
+/*final abstract class Test{
 		public abstract void test();
-	}*/
+	}*//*
+
 
 	//IntUnaryOperator:
 	// public abstract int applyAsInt(int operand) - Applies this operator to the given operand.
@@ -882,7 +887,8 @@ public class Exam2 {
 
 
 	//LocalDateTime:
-	/*1. public static LocalDateTime of(int year,
+	*/
+/*1. public static LocalDateTime of(int year,
 										int month,
 										int dayOfMonth,
 										int hour,
@@ -895,7 +901,8 @@ public class Exam2 {
 	 2. public static Period of(int years,
 								int months,
 								int days)
-	Obtains a Period representing a number of years, months and days.*/
+	Obtains a Period representing a number of years, months and days.*//*
+
 
 	//DateTimeFormatter:
 	//3. public static DateTimeFormatter ofLocalizedTime(FormatStyle timeStyle) - Returns a
@@ -941,9 +948,11 @@ public class Exam2 {
 			FileReader reader = new FileReader("c://someshit.txt");
 		}catch (IOException ex){
 
-		}/*catch (FileNotFoundException ex){
-
 		}*/
+/*catch (FileNotFoundException ex){
+
+		}*//*
+
 	}
 
 
@@ -1099,9 +1108,11 @@ public class Exam2 {
 	}
 
 	interface TSInt{
-		/*public default String toString(){
+		*/
+/*public default String toString(){
 			return "TS";
-		}*/
+		}*//*
+
 	}
 
 
@@ -1140,3 +1151,4 @@ public class Exam2 {
 
 	}
 }
+*/
