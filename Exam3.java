@@ -395,6 +395,23 @@ public class Exam3 {
 
 		DoubleStream doubles = DoubleStream.of(2.2, 2.3, 2.4, 2.5);
 		IntStream ints = doubles.mapToInt(i -> (int)i);
-		System.out.println(ints.boxed().collect(Collectors.toSet()));
+		System.out.println(ints.boxed().collect(Collectors.toSet())); //[2]
+	}
+
+
+	public void question25() {
+
+		TreeSet<Integer> set =  new TreeSet<>();
+		set.add(5);
+		set.add(12);
+		set.add(7);
+		set.add(5);
+		System.out.println(set.higher(5));
+	}
+
+	public void question26() {
+
+		IntStream stream = IntStream.range(1, 5);
+		stream.parallel().forEachOrdered(System.out::print);
 	}
 }
