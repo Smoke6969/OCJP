@@ -4,8 +4,8 @@ public class Main {
 
 	public static void main(String[] args){
 
-		myexamcloud.Exam3 exam = new myexamcloud.Exam3();
+		Exam4 exam4 = new Exam4();
 
-		exam.question17();
+		exam4.question1();
 	}
 }

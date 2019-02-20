@@ -295,6 +295,7 @@ public class Exam3 {
 		System.out.print("3");
 	}
 
+
 	class Resource implements AutoCloseable{
 
 		@Override
@@ -304,6 +305,7 @@ public class Exam3 {
 
 
 		public void print() {
+
 			System.out.print("1");
 		}
 	}
