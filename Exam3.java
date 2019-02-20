@@ -1,6 +1,8 @@
 package myexamcloud;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -15,13 +17,7 @@ import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.OptionalDouble;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -29,6 +25,8 @@ import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -326,4 +324,96 @@ public class Exam3 {
 		ConcurrentLinkedQueue<String> concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
 	}
 
+	//Stream:
+	//1. mapToInt(ToIntFunction<? super T> mapper) -Returns an IntStream consisting of the results of applying the given function to the elements of
+	// this stream. This is an intermediate operation.
+	//2. flatMapToInt(Function<? super T, ? extends IntStream> mapper - Returns an IntStream consisting of the results of replacing each element of this stream with
+	// the contents of a mapped stream produced by applying the provided mapping function to each element.
+	public void question19() { //123
+
+		List<String> list = new ArrayList<>();
+		list.add("1");
+		list.add("2");
+		list.add("3");
+		list.add("4");
+
+		ToIntFunction<String> func1 = i -> Integer.parseInt(i);
+		IntStream stream1 = list.stream().mapToInt(func1);
+
+		Function<String, IntStream> func2 = i -> IntStream.of(Integer.parseInt(i));
+		IntStream stream2 = list.stream().flatMapToInt(func2);
+	}
+
+	public void question20() {
+
+		Stream<Integer> nums = Stream.of(1, 1, 2, 2, 3, 3).distinct();
+		List<Integer> ints = nums.collect(Collectors.toList());
+		System.out.print(ints); //[1, 2, 3]
+	}
+
+
+	public void question21() {
+
+		int j = 9;
+		assert(++j > 7) : "Error";
+		assert(++j == 10) : j;
+		assert(++j > 12) : new Exam3();
+	}
+
+	//That's how you're write console program for inputting
+	public void question22() throws IOException {
+
+		BufferedReader bfr = new BufferedReader(new InputStreamReader(System.in));
+		String input;
+		do{
+			input = bfr.readLine();
+			if(input.equalsIgnoreCase("End")){
+				break;
+			}
+			System.out.println(input);
+		}while (true);
+	}
+
+
+	//YOU CAN NOT HAVE PUBLIC CONSTRUCTOR FOR ENUM
+	public void question23() {
+
+		System.out.println(Level.HIGH == Level.MEDIUM); //false
+		System.out.println(Level.HIGH); //HIGH
+		System.out.println(Level.MEDIUM); //MEDIUM
+	}
+
+	enum Level{
+		HIGH(1), MEDIUM(1), LOW(3);
+
+		private int level;
+		Level(int level){
+			this.level = level;
+		}
+	}
+
+
+	public void question24() {
+
+		DoubleStream doubles = DoubleStream.of(2.2, 2.3, 2.4, 2.5);
+		IntStream ints = doubles.mapToInt(i -> (int)i);
+		System.out.println(ints.boxed().collect(Collectors.toSet())); //[2]
+	}
+
+
+	public void question25() {
+
+		TreeSet<Integer> set =  new TreeSet<>();
+		set.add(5);
+		set.add(12);
+		set.add(7);
+		set.add(5);
+		System.out.println(set.higher(5));
+	}
+
+	public void question26() {
+
+		IntStream stream = IntStream.range(1, 5);
+		stream.parallel().forEachOrdered(System.out::print);
+	}
 }
