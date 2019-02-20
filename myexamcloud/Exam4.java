@@ -1,38 +1,12 @@
 package myexamcloud;
 
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.LocalDate;
-import java.time.MonthDay;
 import java.time.Period;
-import java.time.Year;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.function.Function;
-import java.util.function.IntPredicate;
-import java.util.function.IntUnaryOperator;
-import java.util.function.ToIntFunction;
+import java.util.Comparator;
+import java.util.TreeMap;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import myexamcloud.Exam3;
 
 public class Exam4 {
 
@@ -45,4 +19,38 @@ public class Exam4 {
 		System.out.println(p2); //P2Y3M1D
 	}
 
+	//public static <T> .Collector<T, ?, .Optional<T>> minBy(Comparator<? super T> comparator)
+	//Returns a Collector that produces the minimal element according to a given Comparator, described as an
+	// Optional<T>.
+	public void question2() {
+
+		IntStream ints = IntStream.rangeClosed(2, 6);
+		System.out.println(ints.boxed().collect(Collectors.minBy(Integer::compare))); //Optional[2]
+	}
+
+
+	//TreeMap sorts map by key, that is why there is this ordering
+	public void question3() {
+
+		TreeMap<String, Double> tmap = new TreeMap<>();
+		tmap.put("one", 1.0);
+		tmap.put("two", 2.0);
+		tmap.put("three", 3.0);
+		tmap.put("four", 4.0);
+
+		System.out.println(tmap);//{four=4.0, one=1.0, three=3.0, two=2.0}
+		tmap.pollFirstEntry();
+		System.out.println(tmap);//{one=1.0, three=3.0, two=2.0}
+		tmap.pollLastEntry();
+		System.out.println(tmap);//{one=1.0, three=3.0}
+
+	}
+
+
+	public void question4() {
+
+		Stream<Integer> st = Stream.of(1, 2, 3, 1);
+		Stream<String> str = st.peek(System.out::print).map(i -> Integer.toString(i));
+		str.distinct();
+	}
 }
