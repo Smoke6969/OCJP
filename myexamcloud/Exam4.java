@@ -78,4 +78,21 @@ public class Exam4 {
 		Double d = fun.compose((String s) -> s + ".05").andThen(s -> s*2).apply("1"); //2.1
 		System.out.println(d);
 	}
+
+	// tailMap(K fromKey, boolean inclusive)
+	//java.util.NavigableMap Returns a view of the portion of this map whose keys are greater than (or equal to, if
+	// inclusive is true) fromKey. The returned map is backed by this map, so changes in the returned map are
+	// reflected in this map, and vice-versa. The returned map supports all optional map operations that this map
+	// supports.
+	public void question7() {
+
+		TreeMap<String, Integer> treeMap = new TreeMap<>();
+		treeMap.put("1", 1);
+		treeMap.put("2", 2);
+		treeMap.put("3", 3);
+		treeMap.put("4", 4);
+		treeMap.put("5", 5);
+		treeMap.put("6", 6);
+		System.out.println(treeMap.tailMap("3", false)); //{4=4, 5=5, 6=6}
+	}
 }
