@@ -3,6 +3,7 @@ package myexamcloud;
 import java.time.Period;
 import java.util.Comparator;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -52,5 +53,29 @@ public class Exam4 {
 		Stream<Integer> st = Stream.of(1, 2, 3, 1);
 		Stream<String> str = st.peek(System.out::print).map(i -> Integer.toString(i));
 		str.distinct();
+	}
+
+	//Collectors.joining(CharSequence delimiter, CharSequence prefix, CharSequence suffix)
+	//Returns a Collector that concatenates the input elements, separated by the specified delimiter, with the
+	// specified prefix and suffix, in encounter order.
+	//So in the following example 1 - is the delimeter, 2 - prefix, 3 - suffix. That's why it joins prefix to first
+	// element and suffix to the last.
+	public void question5() {
+
+		Stream<String> stream = Stream.of("A", "B", "C", "D");
+		String string = stream.collect(Collectors.joining("1", "2", "3")); //2A1B1C1D3
+		System.out.println(string); //2A1B3
+	}
+
+	//In the following example the result will be 2.1, because the execution flow is the following:
+	//1. apply 1
+	//2. compose (1 + .05 = 1.05)
+	//3. Double.parseDouble("1.05")
+	//4. 1.05 * 2 = 2.1
+	public void question6() {
+
+		Function<String, Double> fun = s -> Double.parseDouble(s);
+		Double d = fun.compose((String s) -> s + ".05").andThen(s -> s*2).apply("1"); //2.1
+		System.out.println(d);
 	}
 }
